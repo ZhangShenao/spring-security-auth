@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>BasicAuth</title>
+    <script src="js/jquery-2.2.3.min.js"></script>
+    <script src="js/Particleground.js"></script>
+    <link href="css/login.css" rel="stylesheet">
+    <link href="css/base.css" rel="stylesheet">
+    <script>
+        $(document).ready(function(){
+            $("#login-backgroud").particleground({
+                dotColor: '#E8DFE8',
+                lineColor: '#133b88'
+            })
+        })
+        $(document).onkeyup(function (keyboardEvent) {
+            console.info(keyboardEvent);
+        })
+        function login() {
+            if(!$("#userName").val() || !$("#userPass").val()){
+                alert("请输入信息");
+                return false;
+            }
+            $.get("/auth/login",{
+                "user_name":$("#userName").val(),
+                "password":$("#userPass").val()
+            },function (response) {
+                if(response){
+                    location.href="main.html";
+                }else{
+                    alert("登录错误");
+                    return false;
+                }
+            })
+        }
+
+    </script>
+</head>
+<body>
+<div class="login-backgroud" id="login-backgroud">
+    <div class="login-box">
+        <form name="loginForm" role="form">
+            <div class="title">
+                <label><font size="4">请输入登录信息</font></label>
+            </div>
+            <div class="username">
+                <label for="userName"> <img src="img/uesname.png" alt=""></label>
+                <input id='userName' name="name" type="text" maxlength="10"
+                       placeholder="请输入用户名" autocomplete="off" required>
+                <label style="margin-left: 80%;"> <img src="img/tick.png" alt="">
+                </label>
+            </div>
+            <div class="password">
+                <label for="userPass"> <img src="img/password.png"></label>
+                <!--  两个name一样的输入框，防止浏览器自动记住密码 -->
+                <input type="password" name="password" style="display: none">
+                <input id='userPass' type="text" name="password" maxlength="10"
+                       onfocus="this.type='password'" autocomplete="off"
+                       placeholder="请输入密码" required>
+                <label style="margin-left: 80%;">
+                    <img src="img/tick.png" alt="">
+                </label>
+            </div>
+            <div class="btn" type="submit">
+                <a id="subBtn" onclick="login()">登&nbsp;&nbsp;&nbsp;&nbsp;录</a>
+            </div>
+            <div class="checked-box clearfix">
+                <div>
+                    <input id="check" type="checkbox"> <label
+                        for="check">记住我</label>
+                </div>
+                <div>
+                    <a>忘记密码</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</body>
+</html>
