@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>basicAuth</title>
+    <script src="js/jquery-2.2.3.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $.get("/auth/current_user",{
+
+            },function (response) {
+                console.info(response);
+                $("#pageInfo").html("欢迎登录"+response.name);
+                $("*[auth]").hide();
+                for(resource in response.resources){
+                    console.info(resource);
+                    $("*[auth='"+response.resources[resource].key+"']").show();
+                }
+            });
+        })
+        function queryMobile(){
+            $.get("/mobile/query",function (response) {
+                alert(response);
+            })
+        }
+        function querySalary(){
+            $.get("/salary/query",function (response) {
+                alert(response);
+            })
+        }
+        function logout(){
+            $.get("/auth/logout",function (response) {
+                location.href="index.html";
+            })
+        }
+    </script>
+</head>
+<body>
+    <div id="pageInfo">123</div><button onclick="logout()">退出</button>
+    <hr>
+    <button onclick="queryMobile()" auth="mobile">查看电话号码</button>
+    <button onclick="querySalary()" auth="salary">查看薪水</button>
+    <hr>
+    电话号码服务地址：http://localhost:8080/mobile/query <br>
+    薪水服务地址： http://localhost:8080/salary/query
+</body>
+</html>
