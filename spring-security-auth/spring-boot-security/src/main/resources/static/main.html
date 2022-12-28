@@ -8,7 +8,7 @@
         $(document).ready(function () {
             $.get("/auth/current_user", {}, function (response) {
                 console.info(response);
-                $("#pageInfo").html("欢迎登录" + response.name);
+                $("#pageInfo").html("欢迎登录" + response.username);
                 $("*[auth]").hide();
                 for (resource in response.resources) {
                     console.info(resource);
@@ -30,7 +30,7 @@
         }
 
         function logout() {
-            $.get("/auth/logout", function (response) {
+            $.get("/logout", function (response) {  //直接使用SpringSecurity提供的logout接口
                 location.href = "index.html";
             })
         }

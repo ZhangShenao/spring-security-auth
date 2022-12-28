@@ -740,7 +740,7 @@ public class SalaryController {
 
 ```
 
-到这一步呢，我们就完成了一个SpringBoot工程的基础搭建。然后我们就可以启动引用访问MobileController和SalaryController的资源了，这时就会发现，访问这两个资源会转到一个登录页面，要求先登录。登录的用户名是user，密码会在日志中打印。
+到这一步呢，我们就完成了一个SpringBoot工程的基础搭建。然后我们就可以启动引用访问MobileController和SalaryController的资源了，这时就会发现，访问这两个资源会转到一个登录页面，要求先登录。登录的用户名是 user，密码会在日志中打印。
 
 ### 2、用SpringBoot Security重新实现我们上个应用的认证和授权逻辑。
 
@@ -872,27 +872,27 @@ public class LoginController {
 
 然后我们把前台页面移植过来。
 
-这样，一个简单的Spring Secuity工程就配置完成了。我们来简单总结下。
+这样，一个简单的 Spring Secuity 工程就配置完成了。我们来简单总结下。
 
-1、我们可以通过注入一个PasswordEncoder对象来实现密码加密。其中，NoOpPasswordEncoder是一个已过时的加密器，他不会对密码进行任何加密操作。而实际项目中，最常用的是BCryptPasswordEncoder。
+1. 我们可以通过注入一个 PasswordEncoder 对象来实现密码加密。其中，NoOpPasswordEncoder 是一个已过时的加密器，他不会对密码进行任何加密操作。**而实际项目中，最常用的是 BCryptPasswordEncoder。**
 
-2、我们通过注入一个UserDetailsService来管理系统的实体数据。如果我们不自己注入UserDetailsService，那在UserDetailsServiceAutoConfiguration中会默认注入一个包含user用户的UserDetailsService，user用户的密码会打印在控制台日志中。而除了我们系统中使用到的InMemoryUserDetailsManager外，SpringSecurity还提供了JdbcUserDetailsManager来实现对对数据库中的用户数据管理。
+2. 我们通过注入一个 UserDetailsService 来管理系统的实体数据。如果我们不自己注入UserDetailsService，那在 **UserDetailsServiceAutoConfiguration** 中会默认注入一个包含 user 用户的 UserDetailsService，user 用户的密码会打印在控制台日志中。而除了我们系统中使用到的 InMemoryUserDetailsManager 外，SpringSecurity 还提供了 **JdbcUserDetailsManager** 来实现对数据库中的用户数据管理。
 
-另外，关于用户数据来源，可以通过覆盖WebSecurityConfigurerAdapter中的configure(AuthenticationManagerBuilder auth)方法，并注入authenticationManagerBean()的方式进行干预。
+   另外，关于用户数据来源，可以通过覆盖 WebSecurityConfigurerAdapter 中的configure(AuthenticationManagerBuilder auth)方法，并注入 authenticationManagerBean() 的方式进行干预。
 
-3、目前示例中的权限规则都是从内存直接写死的，实际项目中显然都是要从数据库进行加载。而且，目前我们的规则都是基于web请求路径来定制的，而Spring Security实际上还提供了基于注解的方法级别规则配置。
+3. 目前示例中的权限规则都是从内存直接写死的，实际项目中显然都是要从数据库进行加载。而且，目前我们的规则都是基于 web 请求路径来定制的，而 Spring Security实际上还提供了基于注解的方法级别规则配置。
 
 ### 3、项目测试
 
 这样就可以启动任务进行测试了。启动后，可以访问security默认提供的登录页面 http://localhost:8080/login
 
-![security_login_page](.\security_login_page.png)
+![security_login_page](./springSecurity/security_login_page.png)
 
 然后就可以使用之前创建的三个用户分别登陆，登陆后进入测试主页面。
 
-![](D:\1教学资料\springSecurity\security_main_page.png)
+![](./springSecurity/security_main_page.png)
 
-测试页面中，登出 使用的是Security框架提供的默认登出地址 /logout。分别访问mobile和salary下的服务可以看到权限有控制。
+测试页面中，登出使用的是 Security 框架提供的默认登出地址 /logout。分别访问 mobile 和 salary 下的服务可以看到权限有控制。
 
 ### 4、了解SpringBoot Security项目的扩展点
 
@@ -948,7 +948,7 @@ csrf全称是Cross—Site Request Forgery 跨站点请求伪造。这是一种�
 
 当初始化Spring Security时，在org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration中会往Spring容器中注入一个名为**SpringSecurityFilterChain**的Servlet过滤器，类型为org.springframework.security.web.FilterChainProxy。它实现了javax.servlet.Filter，因此外部的请求都会经过这个类。
 
-![](.\security_filterchainproxy.png)
+![](./springSecurity/security_filterchainproxy.png)
 
 
 
