@@ -740,7 +740,7 @@ public class SalaryController {
 
 ```
 
-到这一步呢，我们就完成了一个SpringBoot工程的基础搭建。然后我们就可以启动引用访问MobileController和SalaryController的资源了，这时就会发现，访问这两个资源会转到一个登录页面，要求先登录。登录的用户名是user，密码会在日志中打印。
+到这一步呢，我们就完成了一个SpringBoot工程的基础搭建。然后我们就可以启动引用访问MobileController和SalaryController的资源了，这时就会发现，访问这两个资源会转到一个登录页面，要求先登录。登录的用户名是 user，密码会在日志中打印。
 
 ### 2、用SpringBoot Security重新实现我们上个应用的认证和授权逻辑。
 
