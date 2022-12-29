@@ -44,7 +44,7 @@ Spring Security 官网：https://spring.io/projects/spring-security
 
 **如何设计一个权限系统？**
 
-![](./springSecurity/UserManage.png)
+![](springSecurity/UserManage.png)
 
 ## 二、一个自己实现的权限模型 BasicAuth
 
@@ -128,7 +128,7 @@ Spring Security 官网：https://spring.io/projects/spring-security
 
 项目整体机构如下：
 
-![](./springSecurity/basic_auth_code.png)
+![](springSecurity/basic_auth_code.png)
 
 pom依赖非常简单，只需要引入spring-boot-starter 和 spring-boot-starter-web两个依赖。
 
@@ -886,11 +886,11 @@ public class LoginController {
 
 这样就可以启动任务进行测试了。启动后，可以访问security默认提供的登录页面 http://localhost:8080/login
 
-![security_login_page](./springSecurity/security_login_page.png)
+![security_login_page](springSecurity/security_login_page.png)
 
 然后就可以使用之前创建的三个用户分别登陆，登陆后进入测试主页面。
 
-![](./springSecurity/security_main_page.png)
+![](springSecurity/security_main_page.png)
 
 测试页面中，登出使用的是 Security 框架提供的默认登出地址 /logout。分别访问 mobile 和 salary 下的服务可以看到权限有控制。
 
@@ -948,7 +948,7 @@ csrf全称是Cross—Site Request Forgery 跨站点请求伪造。这是一种�
 
 当初始化Spring Security时，在org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration中会往Spring容器中注入一个名为**SpringSecurityFilterChain**的Servlet过滤器，类型为org.springframework.security.web.FilterChainProxy。它实现了javax.servlet.Filter，因此外部的请求都会经过这个类。
 
-![](./springSecurity/security_filterchainproxy.png)
+![](springSecurity/security_filterchainproxy.png)
 
 
 
