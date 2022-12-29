@@ -1480,7 +1480,7 @@ http
 
 ​	而API网关会作为整个分布式系统的唯一入口，API网关为接入方提供API结合。它本身还可能具有其他辅助职责，如身份验证、监控、负载均衡、缓存、协议转换等功能。API网关方式的核心要点是，所有的接入方和消费端都通过统一的网关接入微服务，在网关层处理所有与业务无关的功能。正题流程如下图：
 
-![](./distributed_plan_3.png)
+![](distributed_plan_3.png)
 
 
 
@@ -2291,13 +2291,13 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 (2)用户使用admin/admin登录后，进入授权确认页面
 
-![](./oauth_demo_2.png)
+![](oauth_demo_2.png)
 
 (3)用户在页面选择同意，并提交。
 
 (4)此时页面就会跳转到指定的redirect uri(我们配置的www.baidu.com。此地址需要授权服务器预先配置，同时客户端需要提交参数)。在跳转地址上，直接带上了access_token，这个就是访问令牌。
 
-![](./oauth_demo_4.png)
+![](oauth_demo_4.png)
 
 这种方案下，一般redirect uri会配置成客户端自己的一个相应地址。这个相应地址接收到授权服务器推送过来的访问令牌后，就可以将访问令牌在本地进行保存，然后在需要调用资源服务时，再拿出来通过资源服务的认证。
 
@@ -2321,11 +2321,11 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 (2)使用admin用户登录完成后，会弹出默认的授权页面。--微信将授权页面进行了定制
 
-![](./oauth_demo_2.png)
+![](oauth_demo_2.png)
 
 (3)选择同意后，会跳转到我们指定的百度网页，并带上了授权码code。--实际项目中应该是指向自己客户端工程的一个路径，后台获取code后保存起来。
 
-![](./oauth_demo_3.png)
+![](oauth_demo_3.png)
 
 拿到code后，就可以向UAA工程申请access_token
 
@@ -2347,7 +2347,7 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 这个接口也是oauth的统一定义端口，他的权限不在客户端配置中配置，而是在AuthorizationServerSecurityConfigurer对象中配置。这里只是一并进行测试：
 
-![](./oauth_checktoken_postman.png)
+![](oauth_checktoken_postman.png)
 
 ### 7.5 资源服务配置
 
