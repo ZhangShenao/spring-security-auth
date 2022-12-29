@@ -894,19 +894,19 @@ public class LoginController {
 
 测试页面中，登出使用的是 Security 框架提供的默认登出地址 /logout。分别访问 mobile 和 salary 下的服务可以看到权限有控制。
 
-### 4、了解SpringBoot Security项目的扩展点
+### 4、了解 SpringBoot Security 项目的扩展点
 
-这样，一个基本的spring-boot-security项目就很快搭建起来了。而Spring Security实际上还提供了相当丰富的扩展点，包括用户名密码校验规则、资源校验规则、Session管理规则等。我们需要了解这些扩展点，这样才能在实际项目中，运用上Spring Se
+这样，一个基本的 spring-boot-security 项目就很快搭建起来了。而 Spring Security 实际上还提供了相当丰富的扩展点，包括用户名密码校验规则、资源校验规则、Session 管理规则等。我们需要了解这些扩展点，这样才能在实际项目中，运用上Spring Security。
 
 1、主体数据来源
 
-​	SpringSecurity通过引用Spring容器中的UserDetailsService对象来管理主体数据。默认情况下，会注入一个包含user用户的默认主体管理服务。我们演示中就通过注入一个InMemoryUserDetailsManager对象覆盖了默认的主体管理器。
+​	SpringSecurity 通过引用 Spring 容器中的 **UserDetailsService** 对象来管理主体数据。默认情况下，会注入一个包含 user 用户的默认主体管理服务。我们演示中就通过注入一个 InMemoryUserDetailsManager 对象覆盖了默认的主体管理器。
 
-​	实际项目中的用户信息大都会来自于数据库。在SpringSecurity中，也提供了JdbcUserDetailsManager来实现对数据库的用户信息进行管理。而如果这些不满足实际需求，可以通过自己实现一个UserDetailsService对象并注入到Spring容器中，来实现自定义的主体数据管理。
+​	实际项目中的用户信息大都会来自于数据库。在 SpringSecurity 中，也提供了 JdbcUserDetailsManager 来实现对数据库的用户信息进行管理。而如果这些不满足实际需求，可以通过自己实现一个 UserDetailsService 对象并注入到 Spring 容器中，来实现自定义的主体数据管理。
 
 2、密码解析器
 
-​	Spring Security提供了很多密码解析器，包括CryptPassEncoder、Argon2PasswordEncoder、Pbkdf2PasswordEncoder等，具体可以参看PassEncoder接口的实现类。其中最常用的一般就是BCryptPasswordEncoder。其中要注意的是，我们在选择不同的密码解析器后，后台存储用户密码时要存储对应的密文。
+​	Spring Security 提供了很多密码解析器，包括 CryptPassEncoder、Argon2PasswordEncoder、Pbkdf2PasswordEncoder 等，具体可以参看PassEncoder接口的实现类。其中最常用的一般就是 **BCryptPasswordEncoder**。其中要注意的是，我们在选择不同的密码解析器后，后台存储用户密码时要存储对应的密文。
 
 3、自定义授权及安全拦截策略
 

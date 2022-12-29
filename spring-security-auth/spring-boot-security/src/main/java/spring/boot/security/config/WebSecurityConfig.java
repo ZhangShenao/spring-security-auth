@@ -4,11 +4,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import spring.boot.security.service.UserDetailServiceImpl;
 
 import static spring.boot.security.constants.CommonConstants.*;
 
@@ -21,6 +20,7 @@ import static spring.boot.security.constants.CommonConstants.*;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     /**
      * 注入Password Encoder，用于对用户密码进行加密
+     * 最常用的为BCryptPasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -34,10 +34,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Bean
     public UserDetailsService userDetailsService() {
-        //将用户认证信息维护在内存中,并进行指定资源的授权
-        return new InMemoryUserDetailsManager(User.withUsername("admin").password(passwordEncoder().encode("admin")).authorities(MOBILE_RESOURCE_KEY, SALARY_RESOURCE_KEY).build(),
-                User.withUsername("manager").password(passwordEncoder().encode("manager")).authorities(SALARY_RESOURCE_KEY).build(),
-                User.withUsername("worker").password(passwordEncoder().encode("worker")).authorities("worker").build());
+        //使用自定义的用户服务
+        return new UserDetailServiceImpl();
     }
 
     /**
