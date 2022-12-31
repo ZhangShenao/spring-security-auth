@@ -828,7 +828,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
-7、获取当前用户信息：Spring Security提供了多种获取当前用户信息的方法。
+7、获取当前用户信息：Spring Security 提供了多种获取当前用户信息的方法。
 
 ```java
 package com.tuling.springbootsecurity.controller;
@@ -910,35 +910,39 @@ public class LoginController {
 
 3、自定义授权及安全拦截策略
 
-​	最常规的方式是通过覆盖WebSecurityConfigurerAdapter中的protected void configure(HttpSecurity http)方法。通过http来配置自定义的拦截规则。包含访问控制、登录页面及逻辑、退出页面及逻辑等。
+​	最常规的方式是通过覆盖 **WebSecurityConfigurerAdapter** 中的 protected void configure(HttpSecurity http) 方法。通过http来配置自定义的拦截规则。包含访问控制、登录页面及逻辑、退出页面及逻辑等。
 
-​	**自定义登录**：http.loginPage()方法配置登录页，http.loginProcessingUrl()方法定制登录逻辑。要注意的是，SpringSecurity的登录页和登录逻辑是同一个地址/login，如果使用自定义的页面，需要将登录逻辑地址也分开。例如： http.loginPage("/index.html").loginProcessingUrl("/login")。 
+​	**自定义登录**：http.loginPage() 方法配置登录页，http.loginProcessingUrl()方法定制登录逻辑。要注意的是，SpringSecurity 的登录页和登录逻辑是同一个地址/login，如果使用自定义的页面，需要将登录逻辑地址也分开。例如： http.loginPage("/index.html").loginProcessingUrl("/login")。 
 
-而登录页面的一些逻辑处理，可以参考系统提供的默认登录页。但是这里依然要注意登录页的访问权限。而关于登录页的源码，可以在DefaultLoginPageGeneratingFilter中找到。
+而登录页面的一些逻辑处理，可以参考系统提供的默认登录页。但是这里依然要注意登录页的访问权限。而关于登录页的源码，可以在DefaultLoginPageGeneratingFilter 中找到。
 
-​	**记住我功能**：登录页面提供了记住我功能，此功能只需要往登录时提交一个remeber-me的参数，值可以是 on 、yes 、1 、 true，就会记住当前登录用户的token到cookie中。http.rememberMe().rememberMeParameter("remeber-me")，使用这个配置可以定制参数名。而在登出时，会清除记住我功能的cookie。
+​	**记住我功能**：登录页面提供了记住我功能，此功能只需要往登录时提交一个 remeber-me 的参数，值可以是 on 、yes 、1 、 true，就会记住当前登录用户的 token 到 cookie 中。http.rememberMe().rememberMeParameter("remeber-me")，使用这个配置可以定制参数名。而在登出时，会清除记住我功能的cookie。
 
-​	**拦截策略**：antMachers()方法设置路径匹配，可以用两个星号代表多层路径，一个星号代表一个或多个字符，问号代表一个字符。然后配置对应的安全策略：
+​	**拦截策略**：antMachers()方法设置路径匹配，**可以用两个星号代表多层路径，一个星号代表一个或多个字符，问号代表一个字符**。然后配置对应的安全策略：
 
-​	permitAll()所有人都可以访问。denyAll()所有人都不能访问。 anonymous()只有未登录的人可以访问，已经登录的无法访问。
+- permitAll()：所有人都可以访问。
+- denyAll()：所有人都不能访问。
+-  anonymous()：只有未登录的人可以访问，已经登录的无法访问。
 
-​	hasAuthority、hasRole这些是配置需要有对应的权限或者角色才能访问。 其中，角色就是对应一个ROLE_角色名 这样的一个资源。
+hasAuthority、hasRole 这些是配置需要有对应的权限或者角色才能访问。 其中，角色就是对应一个ROLE_角色名这样的一个资源。
 
-另外的两个配置对象中，AuthenticationManagerBuilder配置认证策略，WebSecurity配置补充的Web请求策略。
+**hasRole("xxx") 等价于 hasAuthority("ROLE_xxx")。**
+
+另外的两个配置对象中，AuthenticationManagerBuilder 配置认证策略，WebSecurity 配置补充的Web请求策略。
 
 4、关于csrf
 
-csrf全称是Cross—Site Request Forgery 跨站点请求伪造。这是一种安全攻击手段，简单来说，就是黑客可以利用存在客户端的信息来伪造成正常客户，进行攻击。例如你访问网站A，登录后，未退出又打开一个tab页访问网站B，这时候网站B就可以利用保存在浏览器中的sessionId伪造成你的身份访问网站A。
+**csrf 全称是 Cross—Site Request Forgery 跨站点请求伪造。**这是一种安全攻击手段，简单来说，就是黑客可以利用存在客户端的信息来伪造成正常客户，进行攻击。例如你访问网站 A，登录后，未退出又打开一个 tab 页访问网站 B，这时候网站 B 就可以利用保存在浏览器中的 sessionId 伪造成你的身份访问网站 A。
 
-我们在示例中是使用http.csrf().disable()方法简单的关闭了CSRF检查。而其实Spring Security针对CSRF是有一套专门的检查机制的。他的思想就是在后台的session中加入一个csrf的token值，然后向后端发送请求时，对于GET、HEAD、TRACE、OPTIONS以外的请求，例如POST、PUT、DELETE等，会要求带上这个token值进行比对。
+我们在示例中是使用 http.csrf().disable() 方法简单的关闭了 CSRF 检查。而其实 Spring Security 针对CSRF是有一套专门的检查机制的。**它的思想就是在后台的 session 中加入一个 csrf 的 token 值，然后向后端发送请求时，对于GET、HEAD、TRACE、OPTIONS以外的请求，例如 POST、PUT、DELETE 等，会要求带上这个 token 值进行比对。**
 
-当我们打开csrf的检查，再访问默认的登录页时，可以看到在页面的登录form表单中，是有一个name为csrf的隐藏字段的，这个就是csrf的token。例如我们在freemarker的模板语言中可以使用<input type="hidden" name="${csrf.parameterName}"  value="${_csrf.token}"/>添加这个参数。
+当我们打开 csrf 的检查，再访问默认的登录页时，可以看到在页面的登录 form 表单中，是有一个 name 为 csrf 的隐藏字段的，这个就是csrf的 token。例如我们在 freemarker 的模板语言中可以使用 <input type="hidden" name="${csrf.parameterName}"  value="${_csrf.token}"/> 添加这个参数。
 
-而在查看Spring Security后台，有一个CsrfFilter专门负责对Csrf参数进行检查。他会调用HttpSessionCsrfTokenRepository生成一个CsrfToken，并将值保存到Session中。
+而在查看 Spring Security 后台，有一个 CsrfFilter 专门负责对Csrf参数进行检查。他会调用 HttpSessionCsrfTokenRepository 生成一个CsrfToken，并将值保存到 Session 中。默认情况下，针对 GET、HEAD、TRACE、OPTIONS 请求，会跳过 CSRF 校验，因为这些请求类型都是查询操作。
 
-5、注解级别方法支持 ： 在@Configuration支持的注册类上打开注解@EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true,jsr250Enabled = true)即可支持方法及的注解支持。prePostEnabled属性 对应@PreAuthorize。securedEnabled 属性支持@Secured注解，支持角色级别的权限控制。jsr250Enabled属性对应@RolesAllowed注解，等价于@Secured。
+5、注解级别方法支持 ： 在 @Configuration 支持的注册类上打开注解 @EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true,jsr250Enabled = true) 即可支持方法及的注解支持。prePostEnabled属性 对应@PreAuthorize。securedEnabled 属性支持@Secured注解，支持角色级别的权限控制。jsr250Enabled属性对应@RolesAllowed注解，等价于@Secured。
 
-6、异常处理：现在前后端分离的状态可以使用@ControllerAdvice注入一个异常处理类，以@ExceptionHandler注解声明方法，往前端推送异常信息。
+6、异常处理：现在前后端分离的状态可以使用 @ControllerAdvice 注入一个异常处理类，以 @ExceptionHandler注解声明方法，往前端推送异常信息。
 
 ## 四、SpringBoot Security工作原理
 
