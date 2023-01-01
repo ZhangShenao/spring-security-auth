@@ -944,35 +944,40 @@ hasAuthority、hasRole 这些是配置需要有对应的权限或者角色才能
 
 6、异常处理：现在前后端分离的状态可以使用 @ControllerAdvice 注入一个异常处理类，以 @ExceptionHandler注解声明方法，往前端推送异常信息。
 
-## 四、SpringBoot Security工作原理
+## 四、SpringBoot Security 工作原理
 
 ### 	1、 结构总览
 
-​		Spring Security是解决安全访问控制的问题，说白了就是认证和授权两个问题。而至于像之前示例中页面控件的查看权限，是属于资源具体行为。Spring Security虽然也提供了类似的一些支持，但是这些不是Spring Security控制的重点。Spring Security功能的重点是对所有进入系统的请求进行拦截，校验每个请求是否能够访问它所期望的资源。而Spring Security对Web资源的保护是通过Filter来实现的，所以要从Filter入手，逐步深入Spring Security原理。
+​		Spring Security 是解决安全访问控制的问题，说白了就是**认证**和**授权**两个问题。而至于像之前示例中页面控件的查看权限，是属于资源具体行为。Spring Security 虽然也提供了类似的一些支持，但是这些不是 Spring Security 控制的重点。Spring Security 功能的重点是对所有进入系统的请求进行拦截，校验每个请求是否能够访问它所期望的资源。而 **Spring Security 对 Web 资源的保护是通过 Filter来实现的**，所以要从 Filter 入手，逐步深入 Spring Security 原理。
 
-当初始化Spring Security时，在org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration中会往Spring容器中注入一个名为**SpringSecurityFilterChain**的Servlet过滤器，类型为org.springframework.security.web.FilterChainProxy。它实现了javax.servlet.Filter，因此外部的请求都会经过这个类。
+当初始化 Spring Security 时，在org.springframework.security.config.annotation.web.configuration.WebSecurityConfiguration中会往Spring容器中注入一个名为 **SpringSecurityFilterChain** 的 Servlet 过滤器，类型为org.springframework.security.web.FilterChainProxy。它实现了javax.servlet.Filter，因此外部的请求都会经过这个类。
 
 ![](springSecurity/security_filterchainproxy.png)
 
 
 
-而FilterChainProxy是一个代理，真正起作用的是FilterChainProxy中SecurityFilterChain所包含的各个Filter，同时，这些Filter都已经注入到Spring容器中，他们是Spring Security的核心，各有各的职责。但是他们并不直接处理用户的认证和授权，而是把他们交给了认证管理器(AuthenticationManager)和决策管理器(AccessDecisionManager)进行处理。下面是FilterChainProxy相关类的UML图示：
+而 FilterChainProxy 是一个代理，真正起作用的是 FilterChainProxy 中 SecurityFilterChain 所包含的各个 Filter，同时，这些 Filter 都已经注入到 Spring 容器中，他们是 Spring Security 的核心，各有各的职责。但是他们并不直接处理用户的认证和授权，而是把他们交给了**认证管理器 AuthenticationManager 和决策管理器 AccessDecisionManager 进**行处理。下面是FilterChainProxy相关类的UML图示：
 
 ![](springSecurity/Security_UML.png)
 
-Spring Security的功能实现主要就是由一系列过滤器链相互配合完成的。在启动过程中可以看到有info日志。
+Spring Security的功能实现主要就是由一系列过滤器链相互配合完成的。在启动过程中可以看到有 info 日志：
+
+```shell
+2023-01-01 16:48:49.866  INFO 24536 --- [           main] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@72f8ae0c, org.springframework.security.web.context.SecurityContextPersistenceFilter@476ee5b3, org.springframework.security.web.header.HeaderWriterFilter@3fe46690, org.springframework.security.web.csrf.CsrfFilter@c6c82aa, org.springframework.security.web.authentication.logout.LogoutFilter@743e66f7, org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter@472a11ae, org.springframework.security.web.authentication.ui.DefaultLoginPageGeneratingFilter@b16e202, org.springframework.security.web.authentication.ui.DefaultLogoutPageGeneratingFilter@323f3c96, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@7cd4a4d7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@14fa92af, org.springframework.security.web.authentication.rememberme.RememberMeAuthenticationFilter@51288417, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6726cc69, org.springframework.security.web.session.SessionManagementFilter@3b4d50b, org.springframework.security.web.access.ExceptionTranslationFilter@44b194fe, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@21079a12]
+```
 
 ![](springSecurity/Security_filterchain.png)
 
 下面介绍过滤器链中主要的几个过滤器及其作用：
 
-**SecurityContextPersistenceFilter** 这个Filter是整个拦截过程的入口和出口（也就是第一个和最后一个拦截器），会在请求开始时从配置好的 SecurityContextRepository 中获取 SecurityContext，然后把它设置给SecurityContextHolder。在请求完成后将SecurityContextHolder 持有的 SecurityContext 再保存到配置好的 SecurityContextRepository，同时清除 securityContextHolder 所持有的 SecurityContext； 
+- **SecurityContextPersistenceFilter**：这个 Filter 是整个拦截过程的入口和出口（也就是第一个和最后一个拦截器），会在请求开始时从配置好的 SecurityContextRepository 中获取 SecurityContext，然后把它设置给 SecurityContextHolder。在请求完成后将SecurityContextHolder 持有的 SecurityContext 再保存到配置好的 SecurityContextRepository，同时清除 securityContextHolder 所持有的 SecurityContext。
 
-**UsernamePasswordAuthenticationFilter** 用于处理来自表单提交的认证。该表单必须提供对应的用户名和密码，其内部还有登录成功或失败后进行处理的 AuthenticationSuccessHandler 和 AuthenticationFailureHandler，这些都可以根据需求做相关改变；
+- **UsernamePasswordAuthenticationFilter**：用于处理来自表单提交的认证。该表单必须提供对应的用户名和密码，其内部还有登录成功或失败后进行处理的 AuthenticationSuccessHandler 和 AuthenticationFailureHandler，这些都可以根据需求做相关改变。
+- **ExceptionTranslationFilter**：能够捕获来自 FilterChain 所有的异常，并进行处理。但是它只会处理两类异常：AuthenticationException 和 AccessDeniedException，其它的异常它会继续抛出。
 
-**FilterSecurityInterceptor** 是用于保护web资源的，使用AccessDecisionManager对当前用户进行授权访问，前面已经详细介绍过了；
+- **FilterSecurityInterceptor**：是用于保护 web 资源的，使用 AccessDecisionManager 对当前用户进行授权访问，前面已经详细介绍过了。
 
-**ExceptionTranslationFilter** 能够捕获来自 FilterChain 所有的异常，并进行处理。但是它只会处理两类异常：AuthenticationException 和 AccessDeniedException，其它的异常它会继续抛出。
+
 
 ### 2、认证流程
 
@@ -980,13 +985,13 @@ Spring Security的功能实现主要就是由一系列过滤器链相互配合�
 
 让我们仔细分析认证过程：
 
-1、用户提交用户名、密码被SecurityFilterChain中的 UsernamePasswordAuthenticationFilter 过滤器获取到，封装为请求Authentication，通常情况下是UsernamePasswordAuthenticationToken这个实现类。
+1、用户提交用户名、密码被 SecurityFilterChain 中的 UsernamePasswordAuthenticationFilter 过滤器获取到，封装为请求Authentication，通常情况下是 UsernamePasswordAuthenticationToken 这个实现类。
 
-2、 然后过滤器将Authentication提交至认证管理器（AuthenticationManager）进行认证
+2、 然后过滤器将 Authentication 提交至认证管理器（AuthenticationManager）进行认证
 
 3、认证成功后， AuthenticationManager 身份管理器返回一个被填充满了信息的（包括上面提到的权限信息，身份信息，细节信息，但密码通常会被移除） Authentication 实例。
 
-4、SecurityContextHolder 安全上下文容器将第3步填充了信息的 Authentication ，通过SecurityContextHolder.getContext().setAuthentication(…)方法，设置到其中。可以看出AuthenticationManager接口（认证管理器）是认证相关的核心接口，也是发起认证的出发点，它的实现类为ProviderManager。而Spring Security支持多种认证方式，因此ProviderManager维护着一个List<AuthenticationProvider> 列表，存放多种认证方式，最终实际的认证工作是由AuthenticationProvider完成的。咱们知道web表单的对应的AuthenticationProvider实现类为DaoAuthenticationProvider，它的内部又维护着一个UserDetailsService负责UserDetails的获取。最终AuthenticationProvider将UserDetails填充至Authentication。
+4、SecurityContextHolder 安全上下文容器将第3步填充了信息的 Authentication ，通过SecurityContextHolder.getContext().setAuthentication(…)方法，设置到其中。可以看出 AuthenticationManager 接口（认证管理器）是认证相关的核心接口，也是发起认证的出发点，它的实现类为 ProviderManager。而 Spring Security 支持多种认证方式，因此ProviderManager 维护着一个 List<AuthenticationProvider> 列表，存放多种认证方式，最终实际的认证工作是由AuthenticationProvider 完成的。咱们知道web表单的对应的 AuthenticationProvider 实现类为 DaoAuthenticationProvider，它的内部又维护着一个 UserDetailsService 负责 UserDetails 的获取。最终 AuthenticationProvider 将 UserDetails 填充至 Authentication。
 
 > 调试代码从UsernamePasswordAuthenticationFilter 开始跟踪。
 >
