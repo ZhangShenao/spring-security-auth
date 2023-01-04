@@ -1563,12 +1563,12 @@ OAuth2.0协议包含以下几个角色：
 
 这其中还有几个重要的概念：
 
-- **clientDetails**（client_id）：客户信息。在示例中代表百度客户端在微信中的唯一索引。 **在微信中用 appid 区分。**注：要注意区分 clientDetails 和 userDetails。
+- **clientDetails**（client_id）：客户信息。在示例中代表百度客户端在微信中的唯一索引。 **在微信中用 appId 区分。**注：要注意区分 clientDetails 和 userDetails。
 - **secret**：秘钥。代表百度获取微信信息需要提供的一个加密字段。这跟微信采用的加密算法有关。
 - **scope**：授权作用域。代表百度可以获取到的微信的信息范围。例如登录范围的凭证无法获取用户信息范围的信息。
 - **access_token**：授权码。百度获取微信用户信息的凭证。**微信中叫做接口调用凭证。**
 - **grant_type**： 授权类型。例如微信目前仅支持基于授权码的 authorization_code 模式。而 OAuth2.0 还可以有其他的授权方式，例如输入微信的用户名和密码的方式。
-- **userDetails**（user_id）：授权用户标识。在示例中代表用户的微信号。 **在微信中用 openid 区分。**
+- **userDetails**（user_id）：授权用户标识。在示例中代表用户的微信号。 **在微信中用 openId 区分。**
 
 关于微信登录的功能介绍，可以查看微信的官方文档：https://developers.weixin.qq.com/doc/oplatform/Mobile_App/WeChat_Login/Development_Guide.html。
 
@@ -1955,13 +1955,13 @@ management.endpoints.web.exposure.include=refresh,health,info,env
 
 ### 7.3 授权服务配置
 
-这一阶段的目的是配置出给客户颁发access_token的服务。这一步主要在授权服务模块中完成
+**这一阶段的目的是配置出给客户颁发 access_token 的服务。这一步主要在授权服务模块中完成。**
 
 #### 7.3.1 打开 @EnableAuthorizationServer 注解
 
-这个注解是Spring Security打开OAuth认证服务的基础注解，可以在启动类或者任意一个@Configuration声明的启动类中打开这个注释。
+这个注解是 Spring Security 打开 OAuth 认证服务的基础注解，可以在启动类或者任意一个 @Configuration 声明的启动类中打开这个注释。
 
-之前我们配置Spring Security时，利用了WebSecurityConfigurerAdapter注入一个配置对象来完成对基础认证授权功能的配置。 在使用OAuth2时，Spring Security也提供了一个类似的适配器来帮助我们完成配置。
+之前我们配置 Spring Security 时，利用了 **WebSecurityConfigurerAdapter** 注入一个配置对象来完成对基础认证授权功能的配置。 在使用OAuth2时，Spring Security也提供了一个类似的适配器来帮助我们完成配置。
 
 ```java
 package com.tuling.security.distributed.uaa.config;
@@ -1976,7 +1976,7 @@ public class MyAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
 }
 ```
 
-AuthorizationServerConfigurerAdapter要求配置以下几个类，这几个类是由Spring创建的独立的配置对象，它们会被Spring传入AuthorizationServerConfigurer中进行配置。
+AuthorizationServerConfigurerAdapter 要求配置以下几个类，这几个类是由 Spring 创建的独立的配置对象，它们会被 Spring 传入AuthorizationServerConfigurer 中进行配置。
 
 ```java
 public class AuthorizationServerConfigurerAdapter implements AuthorizationServerConfigurer {
@@ -1986,26 +1986,26 @@ public class AuthorizationServerConfigurerAdapter implements AuthorizationServer
 }
 ```
 
-这三个配置也是整个授权认证服务中最核心的配置。
+这三个配置也是整个授权认证服务中最核心的配置：
 
-**ClientDetailsServiceConfigurer**：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，你能够把客户端详情信息写死在这里或者是通过数据库来存储调取详情信息。
+- **ClientDetailsServiceConfigurer**：用来配置客户端详情服务（ClientDetailsService），客户端详情信息在这里进行初始化，可以把客户端详情信息写死在这里，或者是通过数据库来存储调取详情信息。
+- **AuthorizationServerEndpointsConfifigurer**：用来配置令牌（token）的访问端点和令牌服务（TokenServices）。
+- **AuthorizationServerSecurityConfifigurer**：用来配置令牌端点的安全约束。
 
-**AuthorizationServerEndpointsConfifigurer**：用来配置令牌（token）的访问端点和令牌服务(tokenservices)。
 
-**AuthorizationServerSecurityConfifigurer**：用来配置令牌端点的安全约束. 
 
 ### 7.3.2 配置客户端详细信息
 
-ClientDetailsServiceConfigurer能够使用内存或者JDBC来实现客户端详情服务(ClientDetailsService)，ClientDetailsService负责查找ClientDetails，一个ClientDetails代表一个需要接入的第三方应用，例如我们上面提到的OAuth流程中的百度。ClientDetails中有几个重要的属性如下：
+**ClientDetailsServiceConfigurer 能够使用内存或者 JDBC 来实现客户端详情服务（ClientDetailsService），ClientDetailsService 负责查找 ClientDetails，一个 ClientDetails 代表一个需要接入的第三方应用，例如我们上面提到的 OAuth 流程中的百度。**ClientDetails 中有几个重要的属性如下：
 
-- clientId: 用来标识客户的ID。必须。
-- secret: 客户端安全码，如果有的话。在微信登录中就是必须的。
-- scope： 用来限制客户端的访问范围，如果是空(默认)的话，那么客户端拥有全部的访问范围。
-- authrizedGrantTypes：此客户端可以使用的授权类型，默认为空。在微信登录中，只支持authorization_code这一种。
-- authorities：此客户端可以使用的权限(基于Spring Security authorities)
+- clientId：用来标识客户的ID。必须。
+- secret：客户端安全码，如果有的话。在微信登录中就是必须的。
+- scope：用来限制客户端的访问范围，默认为空，表示客户端拥有全部的访问范围。
+- authrizedGrantTypes：表示客户端可以使用的授权类型，默认为空。在微信登录中，只支持 authorization_code 这一种。
+- authorities：客户端可以使用的权限（基于Spring Security authorities）。
 - redirectUris：回调地址。授权服务会往该回调地址推送此客户端相关的信息。
 
-Client Details客户端详情，能够在应用程序运行的时候进行更新，可以通过访问底层的存储服务(例如访问mysql，就提供了JdbcClientDetailsService)或者通过自己实现ClientRegisterationService接口(同时也可以实现ClientDetailsService接口)来进行定制。
+ClientDetails 客户端详情，能够在应用程序运行的时候进行更新，可以通过访问底层的存储服务（例如访问 mysql，就提供了JdbcClientDetailsService）或者通过自己实现 ClientRegisterationService 接口。同时也可以实现 ClientDetailsService 接口来进行定制。
 
 示例中我们暂时使用内存方式存储客户端详情信息，配置如下：
 
@@ -2031,13 +2031,13 @@ Client Details客户端详情，能够在应用程序运行的时候进行更新
 
 管理令牌
 
-AuthorizationServerTokenService接口定义了一些对令牌进行管理的必要操作，令牌可以被用来加载身份信息，里面包含了这个令牌的相关权限。
+**AuthorizationServerTokenService 接口定义了一些对令牌进行管理的必要操作，令牌可以被用来加载身份信息，里面包含了这个令牌的相关权限。**
 
-实现一个AuthorizationServerTokenServices这个接口，需要继承DefaultTokenServices这个类。 该类中包含了一些有用的实现。你可以使用它来修改令牌的格式和令牌的存储。默认情况下，他在创建一个令牌时，是使用随机值来进行填充的。这个类中完成了令牌管理的几乎所有的事情，唯一需要依赖的是spring容器中的一个TokenStore接口实现类来定制令牌持久化。而这个TokenStore，有一个默认的实现，就是ImMemoryTokenStore，这个类会将令牌保存到内存中。除此之外，还有几个默认的TokenStore实现类可以使用。
+实现一个 AuthorizationServerTokenServices 这个接口，需要继承 DefaultTokenServices 这个类。 该类中包含了一些有用的实现。你可以使用它来修改令牌的格式和令牌的存储。默认情况下，他在创建一个令牌时，是使用随机值来进行填充的。这个类中完成了令牌管理的几乎所有的事情，唯一需要依赖的是 Spring 容器中的一个 **TokenStore** 接口实现类来定制令牌持久化。而这个 TokenStore，有一个默认的实现，就是 **ImMemoryTokenStore**，这个类会将令牌保存到内存中。除此之外，还有几个默认的 TokenStore 实现类可以使用：
 
-- InMemoryTokenStore：这个是默认采用的方式。他可以在单服务器上完美运行(即并发访问压力不大的情况下，并且他在失败时不会进行备份)。大多数的项目都可以使用这个实现类来进行尝试。也可以在并发的时候来进行管理，因为不会被保存到磁盘中，所以更易于调试。
-- JdbcTokenStore：这是一个基于JDBC的实现类，令牌会被保存到关系型数据库中。使用这个实现类，可以在不同的服务器之间共享令牌信息。当然，这个是需要使用spring boot jdbc相关的依赖的。类似的，还有RedisTokenStore基于Redis存储令牌信息。
-- JwtTokenStore：全程是JSON Web Token。他可以把令牌信息全部编码整合进令牌本身，这样后端服务可以不用存储令牌相关信息，这是他最大的优势。但是他也有缺点， 那就是撤销一个已经授权的令牌会非常困难。所以他通常用来处理一个生命周期较短的令牌以及撤销刷新令牌(refresh_token)。而另一个缺点就是这个令牌会比较大，因为他要包含较多的用户凭证信息。JwtTokenStore不会保存任何数据，但是他在转换令牌值以及授权信息方面和DefaultTokenServices所扮演的角色是一样的。
+- InMemoryTokenStore：这个是默认采用的方式。他可以在单服务器上完美运行（即并发访问压力不大的情况下，并且他在失败时不会进行备份)。大多数的项目都可以使用这个实现类来进行尝试。也可以在并发的时候来进行管理，因为不会被保存到磁盘中，所以更易于调试。
+- JdbcTokenStore：这是一个基于 JDBC 的实现类，令牌会被保存到关系型数据库中。使用这个实现类，可以在不同的服务器之间共享令牌信息。当然，这个是需要使用 Spring Boot Jdbc 相关的依赖的。类似的，还有 RedisTokenStore 是基于 Redis 存储令牌信息。
+- JwtTokenStore：全程是JSON Web Token。他可以把令牌信息全部编码整合进令牌本身，这样后端服务可以不用存储令牌相关信息，这是他最大的优势。但是他也有缺点， 那就是撤销一个已经授权的令牌会非常困难。所以他通常用来处理一个生命周期较短的令牌以及撤销刷新令牌（refresh_token）。而另一个缺点就是这个令牌会比较大，因为他要包含较多的用户凭证信息。JwtTokenStore不会保存任何数据，但是他在转换令牌值以及授权信息方面和 DefaultTokenServices 所扮演的角色是一样的。
 
 所以我们下面的步骤首先是要定义一个TokenStore
 
@@ -2055,9 +2055,9 @@ public class TokenConfig {
     }
 ```
 
-2、注入AuthorizationServerTokenService
+2、注入 AuthorizationServerTokenService
 
-在AuthorizationServer中定义AuthorizationServerTokenServices
+在 AuthorizationServer 中定义AuthorizationServerTokenServices
 
 ```java
     @Autowired
@@ -2079,21 +2079,21 @@ public class TokenConfig {
 
 ### 7.3.3 令牌访问端点配置
 
-AuthorizationServerEndpointsConfigurer这个对象的实例可以完成令牌服务以及令牌服务各个endpoint配置。
+**AuthorizationServerEndpointsConfigurer 这个对象的实例可以完成令牌服务以及令牌服务各个 endpoint 配置。**
 
-**配置授权类型(Grant Types)**
+**配置授权类型（Grant Types）**
 
-AuthorizationServerEndpointsConfigurer对于不同类型的授权类型，也需要配置不同的属性。
+AuthorizationServerEndpointsConfigurer 对于不同类型的授权类型，也需要配置不同的属性。
 
-- authenticationManager：认证管理器。当你选择了password(资源所有者密码)这个授权类型时，就需要指定authenticationManager对象来进行鉴权。
-- userDetailsService：用户主体管理服务。如果设置了这个属性，那说明有一个自己的UserDetailsService接口的实现，或者你可以把这个东东设置到全局域(例如GlobalAuthenticationManagerConfigurer)上去，当你设置了这个之后，那么refresh_token刷新令牌方式的授权类型流程中就会多包含一个检查步骤，来确保这个账号是否仍然有效。
+- authenticationManager：认证管理器。当你选择了 password（资源所有者密码）这个授权类型时，就需要指定authenticationManager 对象来进行鉴权。
+- userDetailsService：用户主体管理服务。如果设置了这个属性，那说明有一个自己的 UserDetailsService 接口的实现，或者你可以把这个对象设置到全局域（GlobalAuthenticationManagerConfigurer）上去。当你设置了这个之后，那么 refresh_token 刷新令牌方式的授权类型流程中就会多包含一个检查步骤，来确保这个账号是否仍然有效。
 - authorizationCodeServices：这个属性是用来设置授权服务器的，主要用于 authorization_code 授权码类型模式。
 - implicitGrantService：这个属性用于设置隐式授权模式的状态。
-- tokenGranter：如果设置了这个东东(即TokenGranter接口的实现类)，那么授权将会全部交由你来自己掌控，并且会忽略掉以上几个属性。这个属性一般是用作深度拓展用途的，即标准的四种授权模式已经满足不了你的需求时，才会考虑使用这个。
+- tokenGranter：如果设置了这个对象（即TokenGranter接口的实现类），那么授权将会全部交由你来自己掌控，并且会忽略掉以上几个属性。这个属性一般是用作深度拓展用途的，即标准的四种授权模式已经满足不了你的需求时，才会考虑使用这个。
 
-**配置授权断点的URL(Endpoint URLS):**
+**配置授权端点的URL(Endpoint URLS)：**
 
-AuthorizationServerEndpointsConfifigurer这个配置对象首先可以通过pathMapping()方法来配置断点URL的链接地址。即将oauth默认的连接地址替代成其他的URL链接地址。例如spring security默认的授权同意页面/auth/confirm_access非常简陋，就可以通过passMapping()方法映射成自己定义的授权同意页面。
+AuthorizationServerEndpointsConfifigurer 这个配置对象首先可以通过 pathMapping() 方法来配置端点 URL 的链接地址。即将 OAuth默认的连接地址替代成其他的 URL 链接地址。例如 Spring Security 默认的授权同意页面 /auth/confirm_access 非常简陋，就可以通过passMapping()方法映射成自己定义的授权同意页面。
 
 > 框架默认的URL链接有如下几个：
 >
@@ -2109,9 +2109,9 @@ AuthorizationServerEndpointsConfifigurer这个配置对象首先可以通过path
 >
 > /oauth/token_key ： 使用Jwt令牌需要用到的提供公有密钥的端点。
 >
-> 需要注意的是，这几个授权端点应该被Spring Security保护起来只供授权用户访问。
+> 需要注意的是，这几个授权端点应该被 Spring Security 保护起来只供授权用户访问。
 
-在AuthorizationServer配置令牌访问端点
+在 AuthorizationServer 配置令牌访问端点
 
 ```
    @Autowired
@@ -2140,7 +2140,9 @@ AuthorizationServerEndpointsConfifigurer这个配置对象首先可以通过path
 
 ### 7.3.4 令牌端点的安全约束
 
-AuthorizationServerSecurityConfifigurer , 用来配置令牌端点(Token Endpoint)的安全约束，在AuthorizationServer中配置如下：
+**AuthorizationServerSecurityConfigurer , 用来配置令牌端点（Token Endpoint）的安全约束。**
+
+在AuthorizationServer中配置如下：
 
 ```java
     @Override
@@ -2154,13 +2156,11 @@ AuthorizationServerSecurityConfifigurer , 用来配置令牌端点(Token Endpoin
 
 ### 7.3.5 授权服务配置总结：
 
-OAuth2的授权服务配置是大家使用Spring Security OAuth最头疼的地方。其实具体的配置方式可以不用着重记忆，翻翻API基本能看懂大概。但是这三块核心的配置对象一定要理解记忆。
+OAuth2 的授权服务配置是大家使用 Spring Security OAuth 最头疼的地方。其实具体的配置方式可以不用着重记忆，翻翻 API 基本能看懂大概。但是这三块核心的配置对象一定要理解记忆。
 
-1、ClientDetailsServiceConfigurer 配置客户端信息。
-
-2、AuthorizationServerEndpointsConfigurer 配置令牌服务。首选需要配置token如何存取，以及客户端支持哪些类型的token。然后不同的令牌服务需要不同的其他服务。authorization_code类型需要配置authorizationCodeServices来管理授权码，password类型需要UserDetailsService来验证用户身份。
-
-3、AuthorizationServerSecurityConfigurer 对相关endpoint定义一些安全约束。
+1. ClientDetailsServiceConfigurer：配置客户端信息。
+2. AuthorizationServerEndpointsConfigurer：配置令牌服务。首选需要配置 token 如何存取，以及客户端支持哪些类型的 token。然后不同的令牌服务需要不同的其他服务。authorization_code 类型需要配置 authorizationCodeServices 来管理授权码，password类型需要 UserDetailsService 来验证用户身份。
+3. AuthorizationServerSecurityConfigurer：对相关 endpoint 定义一些安全约束。
 
 ### 7.3.6 web安全配置
 
