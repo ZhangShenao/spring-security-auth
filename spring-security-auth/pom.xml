@@ -11,6 +11,8 @@
     <modules>
         <module>basic-auth</module>
         <module>spring-boot-security</module>
+        <module>distributed-auth-service</module>
+        <module>distributed-resource-service</module>
     </modules>
 
     <properties>
