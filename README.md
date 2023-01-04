@@ -1001,7 +1001,7 @@ Spring Security的功能实现主要就是由一系列过滤器链相互配合�
 
 ![](springSecurity/Security_Auth_Code.png)
 
-#### 2.1 AuthenticationProvider接口：认证处理器
+#### 2.1 AuthenticationProvider 接口：认证处理器
 
 ```java
 public interface AuthenticationProvider {
@@ -1011,7 +1011,7 @@ public interface AuthenticationProvider {
    boolean supports(Class<?> var1); }
 ```
 
-这里对于AbstractUserDetailsAuthenticationProvider，他的support方法就表明他可以处理用户名密码这样的认证。
+这里对于 AbstractUserDetailsAuthenticationProvider，他的support方法就表明他可以处理用户名密码这样的认证。
 
 ```java
     public boolean supports(Class<?> authentication) {
@@ -1576,27 +1576,25 @@ OAuth2.0协议包含以下几个角色：
 
 ### 7.1 环境介绍
 
-​	根据我们之前的学习， OAuth是一个开放的授权标准，而Spring Security Oauth2是对OAuth2协议的一种实现框架。下面我们来搭建自己的Spring Security OAuth2的服务框架。
+​	根据我们之前的学习， OAuth 是一个开放的授权标准，而 Spring Security Oauth2 是对 OAuth2 协议的一种实现框架。下面我们来搭建自己的 Spring Security OAuth2 服务框架。
 
-​	OAuth2的服务提供方包含两个服务，即授权服务(Authorization Server，也叫做认证服务)和资源服务(Resource Server)，使用Spring Security OAuth2的时候，可以选择在同一个应用中来实现这两个服务，也可以拆分成多个应用来实现同一组授权服务。	
+​	OAuth2 的服务提供方包含两个服务，即**授权服务 （Authorization Server，也叫做认证服务）和资源服务（Resource Server）**，使用 Spring Security OAuth2 的时候，可以选择在同一个应用中来实现这两个服务，也可以拆分成多个应用来实现同一组授权服务。	
 
-​	**授权服务(Authorization Server)**应包含对接入端以及登入用户的合法性进行验证并颁发token等功能，对令牌的请求断点由Spring MVC控制器进行实现，下面是配置一个认证服务必须的endpoints:
+​	**授权服务（Authorization Server）**应包含对接入端以及登入用户的合法性进行验证并颁发 token 等功能，对令牌的请求端点由Spring MVC 控制器进行实现，下面是配置一个认证服务必须的 endpoints:
 
-- ​	AuthorizationEndpoint服务于认证请求。默认URL：/oauth/authorize
-- TokenEndpoint服务于访问令牌的请求。默认URL：/oauth/token
-- OAuth2AuthenticationProcessingFilter用来对请求给出的身份令牌进行解析健全。
+- AuthorizationEndpoint 服务于认证请求。默认URL：/oauth/authorize
+- TokenEndpoint 服务于访问令牌的请求。默认URL：/oauth/token
+- OAuth2AuthenticationProcessingFilter 用来对请求给出的身份令牌进行解析健全。
 
 我们搭建的示例项目大致如下：
 
 ![](springSecurity/security_demo_project.png)
 
-​	其中，distributed-security-uaa模块将用来实现认证授权服务，而distributed-security-salary模块用来实现资源服务。认证的大致流程如下：
+​	其中，distributed-auth-service 模块将用来实现认证授权服务，而 distributed-resource-service 模块用来实现资源服务。认证的大致流程如下：
 
-​	1、客户请求distributed-security-uaa授权服务申请access_token
-
-​	2、客户携带申请到的access_token访问distributed-security-salary中的服务。
-
-​	3、distributed-security-salary将检验access_token的合法性，验证合法后才返回资源信息。
+1. 客户端请求 distributed-auth-service 授权服务申请 access_token。
+2. 客户端携带申请到的 access_token 访问 distributed-resource-service 中的服务。
+3. distributed-resource-service 将检验 access_token 的合法性，验证合法后才返回资源信息。
 
 ### 7.2 基础环境搭建
 
@@ -1709,7 +1707,7 @@ OAuth2.0协议包含以下几个角色：
 </project>
 ```
 
-#### 7.2.2 UAA授权服务模块
+#### 7.2.2 UAA 授权服务模块
 
 ​	1、创建distributed-security-uaa模块，作为授权服务工程，pom.xml依赖如下：
 
@@ -1957,9 +1955,9 @@ management.endpoints.web.exposure.include=refresh,health,info,env
 
 ### 7.3 授权服务配置
 
-这一阶段的目的是配置出给客户颁发access_token的服务。这一步主要在授权服务模快中完成
+这一阶段的目的是配置出给客户颁发access_token的服务。这一步主要在授权服务模块中完成
 
-#### 7.3.1 打开@EnableAuthorizationServer 注解
+#### 7.3.1 打开 @EnableAuthorizationServer 注解
 
 这个注解是Spring Security打开OAuth认证服务的基础注解，可以在启动类或者任意一个@Configuration声明的启动类中打开这个注释。
 
