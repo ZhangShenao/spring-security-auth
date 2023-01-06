@@ -1,10 +1,10 @@
 package basic.auth.interceptor;
 
 import basic.auth.bean.UserBean;
-import basic.auth.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
+import spring.security.auth.common.constants.CommonConstants;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

@@ -1,4 +1,4 @@
-package spring.boot.security.constants;
+package spring.security.auth.common.constants;
 
 /**
  * @author ZhangShenao

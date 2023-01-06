@@ -9,7 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import spring.boot.security.service.UserDetailServiceImpl;
 
-import static spring.boot.security.constants.CommonConstants.*;
+import static spring.security.auth.common.constants.CommonConstants.MOBILE_RESOURCE_KEY;
+import static spring.security.auth.common.constants.CommonConstants.SALARY_RESOURCE_KEY;
 
 /**
  * @author ZhangShenao

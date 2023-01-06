@@ -3,9 +3,9 @@ package basic.auth.dao;
 import basic.auth.bean.ResourceBean;
 import basic.auth.bean.RoleBean;
 import basic.auth.bean.UserBean;
-import basic.auth.constants.CommonConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import spring.security.auth.common.constants.CommonConstants;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;

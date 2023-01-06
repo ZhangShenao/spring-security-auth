@@ -5,6 +5,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import spring.security.auth.common.constants.CommonConstants;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
@@ -28,8 +29,8 @@ public class UserDetailServiceImpl implements UserDetailsService {
      */
     @PostConstruct
     private void init() {
-        users.put("admin", User.withUsername("admin").password(passwordEncoder.encode("admin")).authorities("mobile", "salary").build());
-        users.put("manager", User.withUsername("manager").password(passwordEncoder.encode("manager")).authorities("salary").build());
+        users.put("admin", User.withUsername("admin").password(passwordEncoder.encode("admin")).authorities(CommonConstants.MOBILE_RESOURCE_KEY, CommonConstants.SALARY_RESOURCE_KEY).build());
+        users.put("manager", User.withUsername("manager").password(passwordEncoder.encode("manager")).authorities(CommonConstants.SALARY_RESOURCE_KEY).build());
         users.put("worker", User.withUsername("worker").password(passwordEncoder.encode("worker")).authorities("worker")/*.disabled(true)*/.build());   //用户有4种状态,可以被禁用
         log.info("User Detail Initialized");
     }
