@@ -50,7 +50,7 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
                 .secret(passwordEncoder.encode("secret-1"))//客户端秘钥
                 .resourceIds("salary")//客户端拥有的资源列表
                 .authorizedGrantTypes("authorization_code",
-                        "password", "client_credentials", "implicit", "refresh_token")//该client允许的授权类型
+                        "password", "client_credentials", "implicit", "refresh_token")//该client允许的授权类型,这里允许了全部授权类型
                 .scopes("all")//允许的授权范围
                 .autoApprove(false)//跳转到授权页面
                 .redirectUris("https://www.baidu.com");//回调地址

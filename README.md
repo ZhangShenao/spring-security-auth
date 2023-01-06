@@ -1095,7 +1095,7 @@ public interface PasswordEncoder {、
 
 DaoAuthenticationProvider在additionalAuthenticationChecks方法中会获取Spring容器中的PasswordEncoder来对用户输入的密码进行比较。
 
-#### 2.6 BCryptPasswordEncoder:
+#### 2.6 BCryptPasswordEncoder
 
 ​	这是SpringSecurity中最常用的密码解析器。他使用BCrypt算法。他的特点是加密可以加盐sault，但是解密不需要盐。因为盐就在密文当中。这样可以通过每次添加不同的盐，而给同样的字符串加密出不同的密文。
 
@@ -2237,9 +2237,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
                         "password", "client_credentials", "implicit", "refresh_token")//该client允许的授权类型
 ```
 
-这里就列出了OAuth2支持的四种授权类型。其实是代表了OAuth授权三方的不同互信程度。
+这里就列出了 OAuth2 支持的四种授权类型。其实是代表了OAuth授权三方的不同互信程度。
 
-#### 1、客户端模式 client_credentials：
+#### 1、客户端模式 client_credentials
 
 这种模式是最简单的模式，流程如下：
 
@@ -2253,30 +2253,30 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 参数列表：
 
-- grant_type ：授权类型，需要填写client_credentials，客户端模式
+- grant_type ：授权类型，需要填写 client_credentials ——客户端模式。
 
-- client_id ：客户端标识
-- client_secret ：客户端密钥
+- client_id ：客户端标识。
+- client_secret ：客户端密钥。
 
-（2）授权服务器确认客户端身份后，直接将令牌access_token返回给客户端。
+（2）授权服务器确认客户端身份后，直接将令牌 access_token 返回给客户端。
 
-用POSTMAN进行测试的截图如下：
+用 postman 进行测试的截图如下：
 
 ![](springSecurity/oauth_credit_postman.png)
 
-这种模式是最方便但是也最不安全的模式，代表了授权服务器对客户端的完全互信。因此，这种模式一般可以用在授权服务器对客户端完全信任的场景，例如内部系统或者协议合作方系统对接。
+**这种模式是最方便但是也最不安全的模式，代表了授权服务器对客户端的完全互信。因此，这种模式一般可以用在授权服务器对客户端完全信任的场景，例如内部系统或者协议合作方系统对接。**
 
-#### 2、密码模式 password:
+#### 2、密码模式 password
 
 该模式的流程如下：
 
 ![](springSecurity/oauth_grant_type_password.png)
 
-(1) 资源拥有者将用户名、密码发送给客户端
+（1）资源拥有者将用户名、密码发送给客户端。
 
-(2)客户端拿着资源拥有者的用户名、密码向授权服务器请求令牌access_token。
+（2）客户端拿着资源拥有者的用户名、密码向授权服务器请求令牌 access_token。
 
-对应示例中的流程为：用户将自己微信的用户名、密码提交给百度，百度拿着微信用户名和密码，向微信申请 access_token
+对应示例中的流程为：用户将自己微信的用户名、密码提交给百度，百度拿着微信用户名和密码，向微信申请 access_token。
 
 请求如下：
 
@@ -2287,79 +2287,72 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 参数列表：
 
-- grant_type ：授权类型，需要填写password，密码模式
+- grant_type ：授权类型，需要填写 password——密码模式。
+- client_id ： 客户端标识。
+- client_secret ：客户端密钥。
+- username : 资源拥有者用户名。
+- password ：资源拥有者密码。
 
-- client_id ： 客户端标识
+（3）授权服务器将令牌access_token发送给客户端
 
-- client_secret ：客户端密钥
+用 postman 测试的示例如下：
 
-- username : 资源拥有者用户名
+![](springSecurity/oauth_password_postman.png)
 
-- password ：资源拥有者密码
+**这种模式用户会把用户名和密码直接泄漏给客户端，代表了资源拥有者和授权服务器对客户端的绝对互信，相信客户端不会做坏事。一般适用于内部开发的客户端的场景。**
 
-  (3) 授权服务器将令牌access_token发送给客户端
-
-  用POSTMAN测试的示例如下：
-
-  ![](springSecurity/oauth_password_postman.png)
-
-  这种模式用户会把用户名和密码直接泄漏给客户端，代表了资源拥有者和授权服务器对客户端的绝对互信，相信客户端不会做坏事。一般适用于内部开发的客户端的场景。
-
-#### 3、简化模式 implicit：
+#### 3、简化模式 implicit
 
 这种模式的流程如下：
 
 ![](springSecurity/oauth_grant_type_implict.png)
 
-(1)用户访问客户端，客户端将向授权服务器申请授权。
-
-(2)授权服务器将引导用户进入授权验证页面，等待用户同意授权。
-
-(3)用户在授权验证页面同意进行授权。
-
-(4)用户同意授权后，授权服务器向客户端返回令牌access_token
+1. 用户访问客户端，客户端将向授权服务器申请令牌。
+2. 授权服务器将引导用户进入授权验证页面，等待用户同意授权。
+3. 用户在授权验证页面同意进行授权。
+4. 用户同意授权后，授权服务器向客户端返回令牌 access_token。
 
 测试流程如下：
 
-(1)客户端引导用户，直接访问授权服务器的授权申请地址： http://localhost:53020/uaa/oauth/authorize?client_id=c1&response_type=token&scope=all&redirect_uri=http://www.baidu.com。此时，会跳转到授权服务器的登录页面，需要用户自己输入用户名密码，进行登录。
+(1)客户端引导用户，直接访问授权服务器的授权申请地址：http://localhost:8080/distributed/auth/service/oauth/authorize?client_id=client-1&response_type=token&scope=all&redirect_uri=https://www.baidu.com 。此时，会跳转到授权服务器的登录页面，需要用户自己输入用户名密码，进行登录。
 
 ![](springSecurity/oauth_demo_1.png)
 
-(2)用户使用admin/admin登录后，进入授权确认页面
+(2)用户使用 admin/admin 登录后，进入授权确认页面
 
 ![](springSecurity/oauth_demo_2.png)
 
 (3)用户在页面选择同意，并提交。
 
-(4)此时页面就会跳转到指定的redirect uri(我们配置的www.baidu.com。此地址需要授权服务器预先配置，同时客户端需要提交参数)。在跳转地址上，直接带上了access_token，这个就是访问令牌。
+(4)此时页面就会跳转到指定的 redirect_uri (我们配置的 https://www.baidu.com。此地址需要授权服务器预先配置，同时客户端需要提交参数)。在跳转地址上，直接带上了access_token，这个就是访问令牌。
 
 ![](springSecurity/oauth_demo_4.png)
 
-这种方案下，一般redirect uri会配置成客户端自己的一个相应地址。这个相应地址接收到授权服务器推送过来的访问令牌后，就可以将访问令牌在本地进行保存，然后在需要调用资源服务时，再拿出来通过资源服务的认证。
+这种方案下，一般 redirect_uri会配置成客户端自己的一个相应地址。这个相应地址接收到授权服务器推送过来的访问令牌后，就可以将访问令牌在本地进行保存，然后在需要调用资源服务时，再拿出来通过资源服务的认证。
 
-> 注意下，这种模式下，access_token并不是以Get请求参数的形式推送的，而是以#fragmenet的方式返回的。
+> 注意下，这种模式下，access_token 并不是以 GET 请求参数的形式推送的，而是以 #fragmenet 的方式返回的。
 
-这种模式下，oauth三方的数据已经进行了隔离。这种模式一般用于没有服务端的第三方单页面应用，这样可以在JS里直接相应access_token。
+这种模式下，oauth 三方的数据已经进行了隔离。这种模式一般用于没有服务端的第三方单页面应用，这样可以在 JS 里直接使用相应 access_token。
 
-#### 4、授权码模式 authorization_code ： 
+#### 4、授权码模式 authorization_code
 
 微信登录就是采用的这种模式。这种模式的流程如下：
 
 ![](springSecurity/oauth_grant_type_auth_code.png)
 
-相比上面的简化模式，就是在后面第4步，授权服务器先返回给客户端一个授权码，也就是authorization_code。客户端拿到授权码后，再向授权服务器申请令牌。
+相比上面的简化模式，就是在后面第4步，授权服务器先返回给客户端一个授权码，也就是 **authorization_code**。客户端拿到授权码后，再向授权服务器申请令牌。
 
 测试流程如下：
 
-(1)用户申请access_token时(访问地址http://localhost:53020/uaa/oauth/authorize?client_id=c1&response_type=code&scope=all&redirect_uri=http://www.baidu.com)，会首先跳转登录页面，需要用户进行登录。--微信中，将这个登录页面定制成了扫二维码登录的页面。
+(1)用户申请 access_token 时，访问地址 http://localhost:53020/uaa/oauth/authorize?client_id=c1&response_type=code&scope=all&redirect_uri=http://www.baidu.com，会首先跳转登录页面，需要用户进行登录。在微信中，这个登录页面被定制成了扫二维码登录的页面。
 
 ![](springSecurity/oauth_demo_1.png)
 
-(2)使用admin用户登录完成后，会弹出默认的授权页面。--微信将授权页面进行了定制
+(2)使用 admin 用户登录完成后，会弹出默认的授权页面。同样微信也对授权页面进行了定制。
 
 ![](springSecurity/oauth_demo_2.png)
 
-(3)选择同意后，会跳转到我们指定的百度网页，并带上了授权码code。--实际项目中应该是指向自己客户端工程的一个路径，后台获取code后保存起来。
+(3)选择同意后，会跳转到我们指定的百度网页，并带上了**授权码 code**。实际项目中应该是指向自己客户端工程的一个路径，后台获取code 后保存起来。
 
 ![](springSecurity/oauth_demo_3.png)
 
@@ -2367,23 +2360,23 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 ![](springSecurity/oauth_authencode_postman.png)
 
-以这种方式就能获得access_token。这里注意，redirect_uri需要与上一步一致。
+以这种方式就能获得 access_token。这里注意，redirect_uri 需要与上一步一致。
 
-这种模式是四种模式中最安全的一种。这种模式下，oauth2认证的三方可以在互不信任的情况下完成担保认证过程。而且，这种模式下，access_token是直接在后台服务端之间进行交互，这样也较小了令牌泄漏的风险。
+这种模式是四种模式中最安全的一种。这种模式下，oauth2 认证的三方可以在互不信任的情况下完成担保认证过程。而且，这种模式下，access_token 是直接在后台服务端之间进行交互，这样也降低了令牌泄漏的风险。
 
 **注：这个 code 授权码只能用一次，换取 access_token 后就失效了。**
 
 #### 5、刷新令牌 refresh_token
 
-最后还一个授权类型refresh_token，这个其实严格来说不算是一种授权类型，只是代表一个刷新令牌的端口。当令牌access_token超时后，可以申请这个端口获取更新的令牌。
+最后还有一个授权类型 **refresh_token**，这个其实严格来说不算是一种授权类型，只是代表一个刷新令牌的端口。当令牌access_token 超时后，可以申请这个端口获取更新的令牌。
 
 ![](springSecurity/oauth_refreshtoken_postman.png)
 
-这里用到的refresh_token是随access_token一起申请到的。
+这里用到的 refresh_token 是随 access_token 一起申请到的。每次刷新都会重新生成 access_token。
 
 #### 6、验证令牌接口
 
-这个接口也是oauth的统一定义端口，他的权限不在客户端配置中配置，而是在AuthorizationServerSecurityConfigurer对象中配置。这里只是一并进行测试：
+这个接口也是 oauth 的统一定义端口，他的权限不在客户端配置中配置，而是在AuthorizationServerSecurityConfigurer 对象中配置。这里只是一并进行测试：
 
 ![](springSecurity/oauth_checktoken_postman.png)
 
