@@ -77,8 +77,8 @@ public class OAuthConfig extends AuthorizationServerConfigurerAdapter {
      */
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
-        security.tokenKeyAccess("permitAll()") // oauth/token_key公开
-                .checkTokenAccess("permitAll()") // oauth/check_token公开
+        security.tokenKeyAccess("permitAll()") //开放oauth/token_key接口
+                .checkTokenAccess("permitAll()") //开发oauth/check_token接口,便于资源服务器进行Token校验
                 .allowFormAuthenticationForClients(); // 表单认证，申请令牌
     }
 

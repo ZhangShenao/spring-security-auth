@@ -2154,7 +2154,7 @@ AuthorizationServerEndpointsConfifigurer 这个配置对象首先可以通过 pa
     }
 ```
 
-### 7.3.5 授权服务配置总结：
+### 7.3.5 授权服务配置总结
 
 OAuth2 的授权服务配置是大家使用 Spring Security OAuth 最头疼的地方。其实具体的配置方式可以不用着重记忆，翻翻 API 基本能看懂大概。但是这三块核心的配置对象一定要理解记忆。
 
@@ -2228,7 +2228,7 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-### 7.4 授权服务流程测试：
+### 7.4 授权服务流程测试
 
 在之前配置客户端详细信息时，我们配置了客户端可以支持的授权类型
 
@@ -2382,30 +2382,30 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
 ### 7.5 资源服务配置
 
-前面完成的授权服务实际上是OAuth协议中最复杂的部分，他规定了三方在互不信任的假设下如何进行担保认证。而到了资源服务这一步，其实就比较简单了。资源服务只要在访问资源之前，进行令牌验证即可。
+前面完成的授权服务实际上是 OAuth 协议中最复杂的部分，他规定了三方在互不信任的假设下如何进行担保认证。而到了资源服务这一步，其实就比较简单了。**资源服务只要在访问资源之前，进行令牌验证即可。**
 
-#### 7.5.1 打开@EnableResourceServer注解
+#### 7.5.1 打开 @EnableResourceServer 注解
 
-这个注解是Spring Security打开OAuth资源服务的基础注解，可以在启动类或者任意一个@Configuration声明的启动类中打开这个注释。
+这个注解是 Spring Security 打开 OAuth 资源服务的基础注解，可以在启动类或者任意一个 @Configuration 声明的启动类中打开这个注释。
 
 #### 7.5.2 资源服务器核心配置
 
-然后，与之前的配置方式类似，Spring Security也提供了ResourceServerConfigurerAdapter适配器来协助完成资源服务器的配置。这个适配器提供了多个configure方法，对以下两个核心对象进行配置。
+然后，与之前的配置方式类似，Spring Security 也提供了 **ResourceServerConfigurerAdapter** 适配器来协助完成资源服务器的配置。这个适配器提供了多个 configure 方法，对以下两个核心对象进行配置。
 
-ResourceServerSecurityConfigurer中主要包含：
+ResourceServerSecurityConfigurer 中主要包含：
 
-- tokenServices : ResourceServerTokenServices类的实例，用来实现令牌服务，即如何验证令牌。
-- tokenStore ： TokenStore类的实例，指定令牌如何访问，与tokenServices配置可选
+- tokenServices : ResourceServerTokenServices 类的实例，用来实现令牌服务，即如何验证令牌。
+- tokenStore ： TokenStore类的实例，指定令牌如何访问，与 tokenServices 配置可选。
 - resourceId ： 这个资源服务的ID，是可选的。但是推荐设置并在授权服务中进行验证。
-- 其他的扩展属性例如tokenExtractor令牌提取器用来提取请求中的令牌。
+- 其他的扩展属性例如 tokenExtractor 令牌提取器用来提取请求中的令牌。
 
-HttpSecurity，这个配置与Spring Security类似：
+HttpSecurity，这个配置与 Spring Security 类似：
 
-- authorizeRequests()方法验证请求。antMatchers方法匹配访问路径。access()方法配置需要的权限。
--  .sessionManagement()方法配置session管理策略。
-- 其他自定义权限保护规则也通过HttpSecurity来配置。
+- authorizeRequests()方法：验证请求。antMatchers方法匹配访问路径。access()方法配置需要的权限。
+-  sessionManagement()：方法配置session管理策略。
+- 其他自定义权限保护规则也通过 HttpSecurity 来配置。
 
-@EnableResourceServer注解会自动增加一个类型为OAuth2AuthenticationProcessingFilter的过滤器链。
+@EnableResourceServer 注解会自动增加一个类型为 OAuth2AuthenticationProcessingFilter 的过滤器链。
 
 ResourceServerConfig示例内容如下：
 
@@ -2453,9 +2453,9 @@ public class MyResourceServerConfig extends ResourceServerConfigurerAdapter {
 }
 ```
 
-这里需要注意的是ResourceServerSecurityConfigurer的tokenServices()方法，设定了一个token的管理服务。其中，如果资源服务和授权服务是在同一个应用程序上，那可以使用DefaultTokenServices，这样的话，就不用考虑关于实现所有必要的接口一致性的问题。而如果资源服务器是分离的，那就必须要保证能够有匹配授权服务提供的ResourceServerTokenServices，他知道如何对令牌进行解码。
+这里需要注意的是 ResourceServerSecurityConfigurer 的 tokenServices() 方法，设定了一个 token 的管理服务。**其中，如果资源服务和授权服务是在同一个应用程序上，那可以使用 DefaultTokenServices ，这样的话，就不用考虑关于实现所有必要的接口一致性的问题。而如果资源服务器是分离的，那就必须要保证能够有匹配授权服务提供的 ResourceServerTokenServices ，他知道如何对令牌进行解码。**
 
-令牌解析方法：使用DefaultTokenServices在资源服务器本地配置令牌存储、解码、解析方式。使用RemoteTokenServices资源服务器通过HTTP请求来解码令牌，每次都请求授权服务器端点/oauth/check_token。这时需要授权服务将这个端点暴露出来，以便资源服务进行访问。所以这里要注意下授权服务的下面这个配置：
+令牌解析方法：使用 DefaultTokenServices 在资源服务器本地配置令牌存储、解码、解析方式。**使用 RemoteTokenServices 资源服务器通过 HTTP 请求来解码令牌，每次都请求授权服务器端点/oauth/check_token。这时需要授权服务将这个端点暴露出来，以便资源服务进行访问。**所以这里要注意下授权服务的下面这个配置：
 
 ```java
 @Override
@@ -2467,7 +2467,7 @@ public void configure(AuthorizationServerSecurityConfigurer security) throws Exc
 
 而这个/oauth/check_token端点可以获取到access_token对应到的客户信息。
 
-![](.\oauth_check_token.png)
+![](springSecurity/oauth_check_token.png)
 
 #### 7.5.3 编写资源
 
@@ -2521,11 +2521,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ```
 
-这里使用了@EnableGlobalMethodSecurity方法打开了基于注解的方法级别的权限验证。
+这里使用了 @EnableGlobalMethodSecurity 方法打开了基于注解的方法级别的权限验证。
 
 #### 7.5.5 资源访问测试
 
-到这里，我们的资源服务器就算配置完成了。 下面我们来访问资源服务器的salary接口进行测试。测试时要注意，在向资源服务器提交access_token时，需要在请求的headers上添加一个Authorization参数来提交令牌，而令牌的内容需要先加上token的类型Bearer，然后空格，再加上access_token。
+到这里，我们的资源服务器就算配置完成了。 下面我们来访问资源服务器的 salary 接口进行测试。**测试时要注意，在向资源服务器提交access_token 时，需要在请求的 headers 上添加一个 Authorization 参数来提交令牌，而令牌的内容需要先加上 token 的类型Bearer，然后空格，再加上 access_token。**eg. Authorization: Bearer d6c5d914-f0f6-4cb0-bf0d-82923e9476dc 。
 
 首先，直接访问资源路径不带任何参数。http://localhost:53021/resource/salary/query 会返回一个错误内容：
 
@@ -2536,19 +2536,19 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 }
 ```
 
-然后，我们随意提交一个错误的访问令牌。这里要注意的是，在向资源服务器提交access_token时，需要在请求的headers上添加一个Authorization参数来提交令牌，而令牌的内容需要先加上token的类型，是Bearer。然后空格，再加上access_token。
+然后，我们随意提交一个错误的 access_token，接口会返回一个 invalid_token 异常。
 
 ![](springSecurity/oauth_resource_error.png)
 
-然后，我们重新申请一个正确的access_token，重新访问资源
+然后，我们重新申请一个正确的 access_token，重新访问资源，即可得到正确的结果。
 
 ![](springSecurity/oauth_resource_success.png)
 
 > 测试到这里要注意的有两点
 >
-> 一是，要总结下在我们示例代码中验证的资源的要素包含了哪些，这些都是OAuth认证流程中需要注意的概念。包括 clientDetails， resourceId，scope，authorities(其实还可以有roles，只是roles是相当于ROLE_{rolename}格式的资源)。
+> 一是，要总结下在我们示例代码中验证的资源的要素包含了哪些，这些都是 OAuth 认证流程中需要注意的概念。包括 clientDetails， resourceId，scope，authorities。（其实还可以有 roles，只是 roles 是相当于 ROLE_{rolename} 格式的资源）。
 >
-> 另一点是关于TokenStore对象。到目前为止，我们在资源服务器中并没有配置TokenStore对象，也就是说，资源服务器并不知道access_token有什么意义。他需要使用RemoteTokenServices将令牌拿到授权服务器上去进行验证才会知道access_token代表的客户信息。这一点在请求量加大后，显然会加重系统的网络负担以及运行效率。而这一点，也是后面的JWT令牌需要解决的问题。
+> 另一点是关于 TokenStore 对象。到目前为止，我们在资源服务器中并没有配置 TokenStore 对象，也就是说，资源服务器并不知道access_token 有什么意义。他需要使用RemoteTokenServices 将令牌拿到授权服务器上去进行验证才会知道 access_token 代表的客户信息。这一点在请求量加大后，显然会加重系统的网络负担以及运行效率。而这一点，也是后面的 JWT 令牌需要解决的问题。
 
 ### 7.6 JWT令牌
 
