@@ -11,8 +11,9 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 
-import static spring.boot.security.constants.CommonConstants.MOBILE_RESOURCE_KEY;
-import static spring.boot.security.constants.CommonConstants.SALARY_RESOURCE_KEY;
+import static spring.security.auth.common.constants.CommonConstants.MOBILE_RESOURCE_KEY;
+import static spring.security.auth.common.constants.CommonConstants.SALARY_RESOURCE_KEY;
+
 
 /**
  * @author ZhangShenao

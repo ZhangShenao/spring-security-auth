@@ -2274,7 +2274,11 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 (1) 资源拥有者将用户名、密码发送给客户端
 
-(2)客户端拿着资源拥有者的用户名、密码向授权服务器请求令牌access_token，请求如下：
+(2)客户端拿着资源拥有者的用户名、密码向授权服务器请求令牌access_token。
+
+对应示例中的流程为：用户将自己微信的用户名、密码提交给百度，百度拿着微信用户名和密码，向微信申请 access_token
+
+请求如下：
 
 ```
 /uaa/oauth/token?
@@ -2297,7 +2301,7 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 
   用POSTMAN测试的示例如下：
 
-  ![](.\oauth_password_postman.png)
+  ![](springSecurity/oauth_password_postman.png)
 
   这种模式用户会把用户名和密码直接泄漏给客户端，代表了资源拥有者和授权服务器对客户端的绝对互信，相信客户端不会做坏事。一般适用于内部开发的客户端的场景。
 
@@ -2366,6 +2370,8 @@ client_id=c1&client_secret=secret&grant_type=password&username=admin&password=ad
 以这种方式就能获得access_token。这里注意，redirect_uri需要与上一步一致。
 
 这种模式是四种模式中最安全的一种。这种模式下，oauth2认证的三方可以在互不信任的情况下完成担保认证过程。而且，这种模式下，access_token是直接在后台服务端之间进行交互，这样也较小了令牌泄漏的风险。
+
+**注：这个 code 授权码只能用一次，换取 access_token 后就失效了。**
 
 #### 5、刷新令牌 refresh_token
 

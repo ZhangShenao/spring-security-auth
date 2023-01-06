@@ -53,7 +53,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated() //其他请求需要登录
                 .and() //并行条件
-                .formLogin(); //可从默认的login页面登录，并且登录后跳转到main.htmlemember_me");   //rememberMe记住我功能,会将当前登录用户的token保存到Cookie中
-
+                .formLogin(); //可从默认的login页面登录，并且登录后跳转到main.html
     }
 }
