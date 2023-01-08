@@ -9,9 +9,12 @@ import org.springframework.security.oauth2.provider.code.InMemoryAuthorizationCo
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
-import org.springframework.security.oauth2.provider.token.store.InMemoryTokenStore;
+import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.annotation.Resource;
+
+import static spring.security.auth.common.constants.CommonConstants.JWT_SIGN_KEY;
 
 /**
  * @author ZhangShenao
@@ -22,10 +25,27 @@ import javax.annotation.Resource;
 public class OAuthTokenConfig {
     @Resource
     private ClientDetailsService clientDetailsService;
+
+    /**
+     * 注入JWT Token转换器
+     */
+    @Bean
+    public JwtAccessTokenConverter accessTokenConvert() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey(JWT_SIGN_KEY);
+        return converter;
+    }
+
+    /**
+     * 注入Token存储服务,这里使用JWT
+     */
     @Bean
     public TokenStore tokenStore() {
         //使用默认的基于内存的方式来存储Token
-        return new InMemoryTokenStore();
+//        return new InMemoryTokenStore();
+
+        //使用JWT作为TokenStore
+        return new JwtTokenStore(accessTokenConvert());
     }
 
     /**
@@ -38,6 +58,7 @@ public class OAuthTokenConfig {
         service.setClientDetailsService(clientDetailsService); //客户端详情服务
         service.setSupportRefreshToken(true); //允许令牌自动刷新
         service.setTokenStore(tokenStore()); //令牌存储策略,默认内存
+        service.setTokenEnhancer(accessTokenConvert()); //设置JWT令牌增强
         service.setAccessTokenValiditySeconds(7200); // 令牌默认有效期2小时
         service.setRefreshTokenValiditySeconds(259200); // 刷新令牌默认有效期3天
         return service;

@@ -14,4 +14,6 @@ public interface CommonConstants {
 
     String MOBILE_RESOURCE_KEY = "mobile";  //手机号资源key
     String SALARY_RESOURCE_KEY = "salary";  //薪酬资源key
+
+    String JWT_SIGN_KEY = "distributed-auth-service";
 }

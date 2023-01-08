@@ -1,0 +1,427 @@
+{
+	"info": {
+		"_postman_id": "ca3a5855-57a2-49a4-b2be-06844714c857",
+		"name": "SpringSecurity",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "8502874"
+	},
+	"item": [
+		{
+			"name": "认证服务",
+			"item": [
+				{
+					"name": "申请access_token_客户端授权模式",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "申请access_token_密码模式",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "通过授权码申请access_token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code",
+									"type": "text"
+								},
+								{
+									"key": "code",
+									"value": "2htWlZ",
+									"type": "text"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://www.baidu.com",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "刷新令牌",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "refresh_token",
+									"type": "text"
+								},
+								{
+									"key": "refresh_token",
+									"value": "520188bc-5d60-406b-b4b0-c43fde07f331",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "验证令牌有效性",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "token",
+									"value": "b4aab0d9-b60e-4938-8516-52481bdd9a0c",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/check_token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"check_token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "申请access_token_implicit模式",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/authorize?client_id=client-1&response_type=token&scope=all&redirect_uri=https://www.baidu.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "client-1"
+								},
+								{
+									"key": "response_type",
+									"value": "token"
+								},
+								{
+									"key": "scope",
+									"value": "all"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://www.baidu.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "申请access_token_authorization_code模式",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "client_id",
+									"value": "client-1",
+									"type": "text"
+								},
+								{
+									"key": "client_secret",
+									"value": "secret-1",
+									"type": "text"
+								},
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "admin",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "admin",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8080/distributed/auth/service/oauth/authorize?client_id=client-1&response_type=code&scope=all&redirect_uri=https://www.baidu.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"distributed",
+								"auth",
+								"service",
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "client-1"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "scope",
+									"value": "all"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "https://www.baidu.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "资源服务",
+			"item": [
+				{
+					"name": "查询薪水",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsic2FsYXJ5Il0sInVzZXJfbmFtZSI6ImFkbWluIiwic2NvcGUiOlsiYWxsIl0sImV4cCI6MTY3MzE0NTcwMywiYXV0aG9yaXRpZXMiOlsibW9iaWxlIiwic2FsYXJ5Il0sImp0aSI6ImRjMGZjNDkzLTE4ZDMtNGJlYy1iZDczLTMyNzhlNWUzYWYyMiIsImNsaWVudF9pZCI6ImNsaWVudC0xIn0.Zp_A37UI2GWS9-BQ10Fn9998Zz4BhcK-9QzBA0FqwTI",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8081/distributed/resource/service/salary/query",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"distributed",
+								"resource",
+								"service",
+								"salary",
+								"query"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
