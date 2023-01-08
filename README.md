@@ -932,13 +932,13 @@ hasAuthority、hasRole 这些是配置需要有对应的权限或者角色才能
 
 4、关于csrf
 
-**csrf 全称是 Cross—Site Request Forgery 跨站点请求伪造。**这是一种安全攻击手段，简单来说，就是黑客可以利用存在客户端的信息来伪造成正常客户，进行攻击。例如你访问网站 A，登录后，未退出又打开一个 tab 页访问网站 B，这时候网站 B 就可以利用保存在浏览器中的 sessionId 伪造成你的身份访问网站 A。
+**csrf 全称是 Cross—Site Request Forgery 跨站点请求伪造。**这是一种安全攻击手段，简单来说，就是黑客可以利用存在客户端的已登录信息来伪造成正常客户，进行攻击。例如你访问网站 A，登录后，未退出又打开一个 tab 页访问网站 B，这时候网站 B 就可以利用保存在浏览器中的 sessionId 伪造成你的身份访问网站 A。
 
 我们在示例中是使用 http.csrf().disable() 方法简单的关闭了 CSRF 检查。而其实 Spring Security 针对CSRF是有一套专门的检查机制的。**它的思想就是在后台的 session 中加入一个 csrf 的 token 值，然后向后端发送请求时，对于GET、HEAD、TRACE、OPTIONS以外的请求，例如 POST、PUT、DELETE 等，会要求带上这个 token 值进行比对。**
 
 当我们打开 csrf 的检查，再访问默认的登录页时，可以看到在页面的登录 form 表单中，是有一个 name 为 csrf 的隐藏字段的，这个就是csrf的 token。例如我们在 freemarker 的模板语言中可以使用 <input type="hidden" name="${csrf.parameterName}"  value="${_csrf.token}"/> 添加这个参数。
 
-而在查看 Spring Security 后台，有一个 CsrfFilter 专门负责对Csrf参数进行检查。他会调用 HttpSessionCsrfTokenRepository 生成一个CsrfToken，并将值保存到 Session 中。默认情况下，针对 GET、HEAD、TRACE、OPTIONS 请求，会跳过 CSRF 校验，因为这些请求类型都是查询操作。
+而在查看 Spring Security 后台，有一个 CsrfFilter 专门负责对 csrf 参数进行检查。他会调用 HttpSessionCsrfTokenRepository 生成一个CsrfToken，并将值保存到 Session 中。默认情况下，针对 GET、HEAD、TRACE、OPTIONS 请求，会跳过 CSRF 校验，因为这些请求类型都是查询操作。
 
 5、注解级别方法支持 ： 在 @Configuration 支持的注册类上打开注解 @EnableGlobalMethodSecurity(prePostEnabled = true,securedEnabled = true,jsr250Enabled = true) 即可支持方法及的注解支持。prePostEnabled属性 对应@PreAuthorize。securedEnabled 属性支持@Secured注解，支持角色级别的权限控制。jsr250Enabled属性对应@RolesAllowed注解，等价于@Secured。
 
@@ -2556,9 +2556,9 @@ public class MyWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 ##### 7.6.1.1、什么是JWT
 
-JWT令牌全称JSON WebToken，是一个开放的行业标准(RFC 7519)，它定义了一种简单的、自包含的协议格式，用于在通信双方传递json对象，传递的信息经过数字签名，可以被验证和信任。JWT可以使用HMAC算法或使用RSA算法的公私钥来签名，方式被篡改。
+**JWT 令牌全称 JSON Web Token，是一个开放的行业标准（RFC 7519），它定义了一种简单的、自包含的协议格式，用于在通信双方传递 json 对象，传递的信息经过数字签名，可以被验证和信任。JWT 可以使用 HMAC 算法或使用 RSA 算法的公私钥来签名，防止被篡改。**
 
-在OAuth中使用JWT，那令牌本身就包含了客户的详细信息，这样资源服务不用依赖授权服务就可以完成令牌解析。
+在 OAuth 中使用 JWT，那令牌本身就包含了客户的详细信息，这样资源服务不用依赖授权服务就可以完成令牌解析。
 
 JWT官网：https://jwt.io/
 
@@ -2566,22 +2566,22 @@ JWT官网：https://jwt.io/
 
 RFC 7519标准：https://tools.ietf.org/html/rfc7519
 
-JWT令牌的优点
+JWT 令牌的优点：
 
-- 基于json，非常方便解析
+- 基于 json，非常方便解析。
 - 可以在令牌中自定义丰富的内容，易扩展。
-- 通过非对称加密算法及数字签名技术，JWT防止篡改，安全性高。
-- 资源服务使用JWT可以不依赖于认证服务，自己完成解析。
+- 通过非对称加密算法及数字签名技术，可以放在 JWT 被篡改，安全性高。
+- 资源服务使用 JWT 可以不依赖于认证服务，自己完成解析，降低认证服务器的负载压力。
 
-但是也有一个很大的缺点，就是JWT令牌较长，占据的存储空间比较大。
+但是也有一个很大的缺点：就是 JWT 令牌较长，消耗的存储空间和网络带宽都比较大。
 
 ##### 7.6.1.2、JWT令牌结构
 
-JWT令牌由三个部分组成，每部分中间使用点 (.) 分隔，例如 Header.Payload.Signature
+**JWT 令牌由三个部分组成，每部分中间使用点 (.) 分隔，例如 Header.Payload.Signature。**
 
 - Header
 
-头部包括令牌的类型(JWT)以及使用的哈希算法(如HMAC SHA256 RSA)。例如
+头部包括令牌的类型 (JWT) 以及使用的哈希算法 （如 HMAC/SHA256/RSA 等等)。例如
 
 ```json
 {
@@ -2594,23 +2594,23 @@ JWT令牌由三个部分组成，每部分中间使用点 (.) 分隔，例如 He
 
 - Payload
 
-第二部分是负载，内容也是一个对象，他是存放有效信息的地方，他可以存放JWT提供的现有字段，例如  iss(签发者)，exp(过期时间戳)，sub(面向的用户)等，也可以自定义字段。此部分不建议存放敏感信息，因为此部分可以解码还原出原始内容。
+第二部分是负载，内容也是一个对象，他是存放有效信息的地方。他可以存放 JWT 预定义好的字段，例如  iss（签发者）、exp（过期时间戳）、sub（面向的用户）等，也可以自定义字段。此部分不建议存放敏感信息，因为此部分可以解码还原出原始内容。
 
-最后将这部分JSON内容使用Base64URL编码，就得到了JWT令牌的第二个部分。
+最后将这部分 JSON 内容使用 Base64URL 编码，就得到了 JWT 令牌的第二个部分。
 
 - Signature
 
-第三部分是签名，此部分用于防止JWT内容被篡改。
+第三部分是签名，此部分用于防止 JWT 内容被篡改。
 
-这个部分使用Base64url将前两部分进行编码，编码后使用点(.)连接组成字符串，最后使用header中声明的签名算法进行签名。
+这个部分使用 Base64url 将前两部分进行编码，编码后使用点(.)连接组成字符串，最后使用 header 中声明的签名算法进行签名。
 
-我们了解下JWT的基础知识，有利于使用自定义的JWT令牌。 
+我们了解下 JWT 的基础知识，有利于使用自定义的 JWT 令牌。 
 
 #### 7.6.2 配置JWT令牌服务
 
-首先我们要在授权服务UAA中配置JWT令牌。在UAA中，只需要配置JWT令牌服务即可生成JWT格式的令牌。
+首先我们要在授权服务 UAA 中配置 JWT 令牌。在 UAA 中，只需要配置 JWT 令牌服务即可生成 JWT 格式的令牌。
 
-1、注入JwtTokenStore
+1、注入 **JwtTokenStore**
 
 ```java
 package com.tuling.security.distributed.uaa.config;
@@ -2638,7 +2638,7 @@ public class TokenConfig {
 }
 ```
 
-2、在MyAuthorizationConfig中使用注入的accessTokenConvert声明tokenService
+2、在 MyAuthorizationConfig 中使用注入的 accessTokenConvert 声明 tokenService
 
 ```java
     //使用JWT令牌
@@ -2658,19 +2658,18 @@ public class TokenConfig {
     }
 ```
 
-3、然后就可以测试生成的JWT令牌。
+3、然后就可以测试生成的 JWT 令牌。
 
 ![](springSecurity/oauth_token_jwt.png)
 
-可以看到，申请到的令牌已经变成了JWT格式，比之前长了很多。
+可以看到，申请到的令牌已经变成了 JWT 格式，比之前长了很多。
 
 #### 7.6.3 JWT令牌验证
 
-然后我们到资源服务器中配置使用JWT令牌
+然后我们到资源服务器中配置使用 JWT 令牌：
 
-1、将授权服务中的TokenConfig类全部拷贝到资源服务中。这也是因为资源服务需要与授权服务保持相同的Token。
-
-2、在MyResourceServerConfig中屏蔽ResourceServerTokenServices
+1. 将授权服务中的 TokenConfig 类全部拷贝到资源服务中。这也是因为**资源服务需要与授权服务保持相同的 Token。**
+2. 在 MyResourceServerConfig 中屏蔽 ResourceServerTokenServices
 
 ```java
 
@@ -2706,17 +2705,14 @@ public class TokenConfig {
 
 ## 八、主线问题总结
 
-这样，我们就完成了Spring Security OAuth2的体验之旅，现在我们回头来体验一下整个过程。有一些问题需要总结下。
+这样，我们就完成了 Spring Security OAuth2 的体验之旅，现在我们回头来体验一下整个过程。有一些问题需要总结下：
 
-1、什么是认证、授权、会话、RBAC？基于Session的方式和基于Token的方式有什么区别？
+1. 什么是认证、授权、会话、RBAC？基于 Session 的方式和基于 Token 的方式有什么区别？
+2. Spring Security 的工作原理、认证流程、授权流程。中间有哪些关键组件？主体服务、密码解析器、访问安全规则、登录登出页面逻辑... 这些关键组件如何进行扩展？
+3. OAuth2.0认证的四种模式，他们的大体流程。
+4. Spring Security OAuth2.0 如何实现 OAuth2.0 协议？ 有哪些关键组件？
 
-2、Spring Security的工作原理，认证流程、授权流程。中间有哪些关键组件？主体服务、密码解析器、访问安全规则、登录登出页面逻辑... 这些关键组件如何进行扩展？
-
-3、OAuth2.0认证的四种模式，他们的大体流程。
-
-4、Spring Security OAuth2.0如何实现OAuth2.0协议？ 有哪些关键组件？
-
-## 九、附录，HttpSecurity配置项
+## 九、【附录】HttpSecurity配置项
 
 | 方法                    | 说明                                                         |
 | ----------------------- | ------------------------------------------------------------ |
@@ -2724,22 +2720,22 @@ public class TokenConfig {
 | **headers()**           | 将安全标头添加到响应                                         |
 | **cors()**              | 配置跨域资源共享（ CORS ）                                   |
 | **sessionManagement()** | 允许配置会话管理                                             |
-| **portMapper()**        | 向到 HTTPS 或者从 HTTPS 重定向到 HTTP。默认情况下，Spring Security使用一个PortMapperImpl映射 HTTP 端口8080到 HTTPS 端口8443，HTTP 端口80到 HTTPS 端口443 |
+| **portMapper()**        | 向到 HTTPS 或者从 HTTPS 重定向到 HTTP。默认情况下，Spring Security 使用一个 PortMapperImpl映射 HTTP 端口8080到 HTTPS 端口8443，HTTP 端口80到 HTTPS 端口443 |
 | **jee()**               | 配置基于容器的预认证。 在这种情况下，认证由Servlet容器管理   |
-| **x509()**              | 配置基于x509的认证                                           |
+| **x509()**              | 配置基于 x509 的认证                                         |
 | **rememberMe**          | 允许配置“记住我”的验证                                       |
-| **authorizeRequests()** | 允许基于使用HttpServletRequest限制访问                       |
+| **authorizeRequests()** | 允许基于使用 HttpServletRequest 限制访问                     |
 | **requestCache()**      | 允许配置请求缓存                                             |
 | **exceptionHandling()** | 允许配置错误处理                                             |
-| **securityContext()**   | 在HttpServletRequests之间的SecurityContextHolder上设置SecurityContext的管理。 当使用WebSecurityConfifigurerAdapter时，这将 |
-| **servletApi()**        | 将HttpServletRequest方法与在其上找到的值集成到SecurityContext中。 当使用WebSecurityConfifigurerAdapter时，这将自动应用 |
-| **csrf()**              | 添加 CSRF 支持，使用WebSecurityConfifigurerAdapter时，默认启用 |
-| **logout()**            | 添加退出登录支持。当使用WebSecurityConfifigurerAdapter时，这将自动应用。默认情况是，访问URL”/ logout”，使HTTP Session无效来 |
-| **anonymous()**         | 允许配置匿名用户的表示方法。 当与WebSecurityConfifigurerAdapter结合使用时，这将自动应用。 默认情况下，匿名用户将使用 |
-| **formLogin()**         | 指定支持基于表单的身份验证。如果未指定FormLoginConfifigurer#loginPage(String)，则将生成默认登录页面 |
-| **oauth2Login()**       | 根据外部OAuth 2.0或OpenID Connect 1.0提供程序配置身份验证    |
+| **securityContext()**   | 在 HttpServletRequests 之间的 SecurityContextHolder 上设置 SecurityContext 的管理。 当使用WebSecurityConfigurerAdapter时，这将自动应用 |
+| **servletApi()**        | 将 HttpServletRequest 方法与在其上找到的值集成到 SecurityContext 中。 当使用WebSecurityConfigurerAdapter 时，这将自动应用 |
+| **csrf()**              | 添加 CSRF 支持，使用 WebSecurityConfigurerAdapter 时，默认启用 |
+| **logout()**            | 添加退出登录支持。当使用 WebSecurityConfigurerAdapter 时，这将自动应用。默认情况是，访问URL”/ logout”，使 HTTP Session 无效 |
+| **anonymous()**         | 允许配置匿名用户的表示方法。 当与 WebSecurityConfigurerAdapter 结合使用时，这将自动应用。 默认情况下，匿名用户将使用 |
+| **formLogin()**         | 指定支持基于表单的身份验证。如果未指定 FormLoginConfigurer#loginPage(String)，则将生成默认登录页面 |
+| **oauth2Login()**       | 根据外部 OAuth 2.0 或 OpenID Connect 1.0 提供程序配置身份验证 |
 | **requiresChannel()**   | 配置通道安全。为了使该配置有用，必须提供至少一个到所需信道的映射 |
 | **httpBasic()**         | 配置 Http Basic 验证                                         |
 | **addFilterAt()**       | 允许配置错误处理                                             |
-| **exceptionHandling()** | 在指定的Filter类的位置添加过滤器                             |
+| **exceptionHandling()** | 在指定的 Filter 类的位置添加过滤器                           |
 
